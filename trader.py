@@ -11,15 +11,18 @@ class Trader:
         """
         # Initialize the method output dict as an empty dict
         result = {}
-
         # Iterate over all the keys (the available products) contained in the order depths
         for product in state.order_depths.keys():
 
-            # Check if the current product is the 'Ba' product, only then run the order logic
+            # Check if the current product is the 'PEARLS' product, only then run the order logic
             if product == 'PEARLS':
+                try:
+                    pos = state.position[product]
+                except: 
+                    pos = 0
 
-                max_buy = 20 - state.position[product]
-                max_sell = -20 - state.position[product]
+                max_buy = 20 - pos
+                max_sell = abs(-20 - pos)
                 # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
                 order_depth: OrderDepth = state.order_depths[product]
 
