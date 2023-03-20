@@ -16,11 +16,8 @@ class Trader:
 
             # Check if the current product is the 'PEARLS' product, only then run the order logic
             if product == 'PEARLS':
-                try:
-                    pos = state.position[product]
-                except: 
-                    pos = 0
-
+                
+                pos = state.position.get(product, 0)
                 max_buy = 20 - pos
                 max_sell = abs(-20 - pos)
                 # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
