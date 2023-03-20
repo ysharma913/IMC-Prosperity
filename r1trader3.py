@@ -39,14 +39,14 @@ class Trader:
                     best_ask_volume = order_depth.sell_orders[best_ask]
 
                     # Check if the lowest ask (sell order) is lower than the above defined fair value
-                    if best_ask < acceptable_price:
+                    if best_ask < acceptable_price and best_ask_volume < 15:
                         print("BUY", str(best_ask_volume) + "x", best_ask)
                         orders.append(Order(product, best_ask, best_ask_volume))
 
                 if len(order_depth.buy_orders) != 0:
                     best_bid = max(order_depth.buy_orders.keys())
                     best_bid_volume = order_depth.buy_orders[best_bid]
-                    if best_bid > acceptable_price:
+                    if best_bid > acceptable_price and best_bid_volume < 15:
                         print("SELL", str(-best_bid_volume) + "x", best_bid)
                         orders.append(Order(product, best_bid, -best_bid_volume))
 
@@ -63,16 +63,16 @@ class Trader:
                 # Checking if there are sell orders
                 if len(order_depth.sell_orders) > 0:
                     for ask in order_depth.sell_orders.keys():
-                        if ask < acceptable_price:
-                            ask_vol = order_depth.sell_orders[ask]
+                        ask_vol = order_depth.sell_orders[ask]
+                        if ask < acceptable_price and ask_vol <= 20:
                             print("BUY", str(ask_vol) + "x", ask)
                             orders.append(Order(product, ask, ask_vol))
                 
                 # Checking if there are buy orders
                 if len(order_depth.buy_orders) > 0:
                     for bid in order_depth.buy_orders.keys():
-                        if bid >= acceptable_price:
-                            bid_vol = order_depth.buy_orders[bid]
+                        bid_vol = order_depth.buy_orders[bid]
+                        if bid >= acceptable_price and bid_vol <= 20:
                             print("SELL", str(-bid_vol) + "x", bid)
                             orders.append(Order(product, bid, -bid_vol))
 
