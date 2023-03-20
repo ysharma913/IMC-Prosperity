@@ -49,7 +49,7 @@ class Trader:
                         # The code below therefore sends a BUY order at the price level of the ask,
                         # with the same quantity
                         # We expect this order to trade with the sell order
-                        print("BUY", str(-best_ask_volume) + "x", best_ask)
+                        print("BUY", str(-best_ask_volume) + "x", best_ask, end = "|")
                         orders.append(Order(product, best_ask, -best_ask_volume))
                     else: 
                         break
@@ -69,7 +69,7 @@ class Trader:
                         best_bid_volume = order_depth.buy_orders[best_bid]
                         vol_to_trade = min(best_bid_volume, max_sell)
                         max_sell -= vol_to_trade
-                        print("SELL", str(vol_to_trade) + "x", best_bid)
+                        print("SELL", str(vol_to_trade) + "x", best_bid, end= "|")
                         orders.append(Order(product, best_bid, -vol_to_trade))
                     else:
                         break
@@ -77,6 +77,7 @@ class Trader:
                         break
                 # Add all the above orders to the result dict
                 result[product] = orders
+                print()
 
                 # Return the dict of orders
                 # These possibly contain buy or sell orders for PEARLS
