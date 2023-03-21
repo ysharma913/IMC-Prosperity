@@ -12,7 +12,7 @@ class Trader:
         total = 0
 
         for price in orders.keys():
-            expected_val += price * abs(buy_orders[price])
+            expected_val += price * abs(orders[price])
             total += abs(orders[price])
 
         return expected_val, total
