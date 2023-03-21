@@ -19,12 +19,12 @@ class Trader:
         print(buy_orders)
         print(sell_orders)
         for price in buy_orders.keys():
-            expected_val += price * buy_orders[price]
-            total += buy_orders[price]
+            expected_val += price * abs(buy_orders[price])
+            total += abs(buy_orders[price])
 
         for price in sell_orders.keys():
-            expected_val += price * sell_orders[price]
-            total += sell_orders[price]
+            expected_val += price * abs(sell_orders[price])
+            total += abs(sell_orders[price])
 
         ret[product] = expected_val/total if total != 0 else (self.last_slope[product]if product in self.last_slope else 0)
             
