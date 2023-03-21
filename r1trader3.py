@@ -77,9 +77,9 @@ class Trader:
             
             
             if product in expected_val_dict:
-                expected_val = expected_val_dict.get[product]
+                expected_val = expected_val_dict[product]
                 slope = (expected_val - self.last_exp)/1
-                last_slope = self.last_slope.get[product]
+                last_slope = self.last_slope[product]
 
                 if self.opposite_signs(slope, last_slope):
                     # slope changed from ned to pos, buy
