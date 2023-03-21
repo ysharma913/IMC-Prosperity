@@ -72,39 +72,38 @@ class Trader:
         # Iterate over all the keys (the available products) contained in the order depths
         for product in state.order_depths.keys():
 
-            if product == "BANANAS":
-                pos = state.position.get(product, 0)
-                max_buy = min(20 - pos, 20)
-                max_sell = min(abs(-20 - pos), 20)
+            pos = state.position.get(product, 0)
+            max_buy = min(20 - pos, 20)
+            max_sell = min(abs(-20 - pos), 20)
+        
+            # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+            order_depth: OrderDepth = state.order_depths[product]
+
+            # Initialize the list of Orders to be sent as an empty list
+            orders: list[Order] = []
+            expected_val = expected_val_dict[product]
             
-                # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
-                order_depth: OrderDepth = state.order_depths[product]
-
-                # Initialize the list of Orders to be sent as an empty list
-                orders: list[Order] = []
-                expected_val = expected_val_dict[product]
+            if product in self.last_exp:
                 
-                if product in self.last_exp:
-                    
-                    last_exp = self.last_exp[product]
-                    slope = (expected_val - last_exp)/1
-                    last_slope = self.last_slope[product]
-                    print(expected_val)
-                    if self.opposite_signs(slope, last_slope):
-                        # slope changed from neg to pos, buy
-                        if slope > last_slope:
-                            self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val, trade_made="BUY", product=product, order_lst = orders)
+                last_exp = self.last_exp[product]
+                slope = (expected_val - last_exp)/1
+                last_slope = self.last_slope[product]
+                print(expected_val)
+                if self.opposite_signs(slope, last_slope):
+                    # slope changed from neg to pos, buy
+                    if slope > last_slope:
+                        self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val, trade_made="BUY", product=product, order_lst = orders)
 
-                        elif slope < last_slope:
-                            self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val, trade_made="SELL", product=product, order_lst = orders)
+                    elif slope < last_slope:
+                        self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val, trade_made="SELL", product=product, order_lst = orders)
 
-                    result[product] = orders
-                    self.last_slope[product] = slope
-                else:
-                    self.last_slope[product] = 0
+                result[product] = orders
+                self.last_slope[product] = slope
+            else:
+                self.last_slope[product] = 0
 
-                
-                self.last_exp[product] = expected_val
+            
+            self.last_exp[product] = expected_val
             # if product == 'PEARLS':
             #     # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
             #     order_depth: OrderDepth = state.order_depths[product]
