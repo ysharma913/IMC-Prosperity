@@ -1,8 +1,30 @@
 from typing import Dict, List
 from datamodel import OrderDepth, TradingState, Order
-
+import operator
 
 class Trader:
+    
+    def do_order(self, orders, operator, max_vol, acceptable_price, trade_made, product):
+        orders_sorted = sorted(orders.keys())
+        for prices in orders_sorted:
+            if operator(prices, acceptable_price):
+                volume = orders[prices]
+                vol_to_trade = min(volume, max_vol)
+                max_vol -= vol_to_trade
+                # In case the lowest ask is lower than our fair value,
+                # This presents an opportunity for us to buy cheaply
+                # The code below therefore sends a BUY order at the price level of the ask,
+                # with the same quantity
+                # We expect this order to trade with the sell order
+                print(trade_made, str(volume) + "x", prices, end = "|")
+                if trade_made == "BUY":
+                    orders.append(Order(product, prices,-volume))
+                elif trade_made == "SELL":
+                    orders.append(Order(product, prices, -volume))
+            else: 
+                break
+            if max_vol <= 0:
+                break
 
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
         """
@@ -18,10 +40,12 @@ class Trader:
 
         # Iterate over all the keys (the available products) contained in the order depths
         for product in state.order_depths.keys():
-            
+            pos = state.position.get(product, 0)
+            max_buy = 20 - pos
+            max_sell = abs(-20 - pos)
             # Check if the current product is the 'BANANAS' product, only then run the order logic
             if product == 'BANANAS':
-
+         
                 # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
                 order_depth: OrderDepth = state.order_depths[product]
 
@@ -31,50 +55,26 @@ class Trader:
                 acceptable_price = BANANA_VALUE - 108
 
                 # If statement checks if there are any SELL orders in the PEARLS market
-                if len(order_depth.sell_orders) > 0:
+                self.do_order(orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product)
 
-                    # Sort all the available sell orders by their price,
-                    # and select only the sell order with the lowest price
-                    best_ask = min(order_depth.sell_orders.keys())
-                    best_ask_volume = order_depth.sell_orders[best_ask]
-
-                    # Check if the lowest ask (sell order) is lower than the above defined fair value
-                    if best_ask < acceptable_price and best_ask_volume < 15:
-                        print("BUY", str(best_ask_volume) + "x", best_ask)
-                        orders.append(Order(product, best_ask, best_ask_volume))
-
-                if len(order_depth.buy_orders) != 0:
-                    best_bid = max(order_depth.buy_orders.keys())
-                    best_bid_volume = order_depth.buy_orders[best_bid]
-                    if best_bid > acceptable_price and best_bid_volume < 15:
-                        print("SELL", str(-best_bid_volume) + "x", best_bid)
-                        orders.append(Order(product, best_bid, -best_bid_volume))
+                self.do_order(orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product)
 
                 result[product] = orders
 
-
             if product == 'PEARLS':
-                order_depth = state.order_depths[product]
-                orders = []
+                # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+                order_depth: OrderDepth = state.order_depths[product]
+
+                # Initialize the list of Orders to be sent as an empty list
+                orders: list[Order] = []
 
                 # Pearls are valued at 10000, and they are low-risk/stable
                 acceptable_price = PEARL_VALUE
 
-                # Checking if there are sell orders
-                if len(order_depth.sell_orders) > 0:
-                    for ask in order_depth.sell_orders.keys():
-                        ask_vol = order_depth.sell_orders[ask]
-                        if ask < acceptable_price and ask_vol <= 20:
-                            print("BUY", str(ask_vol) + "x", ask)
-                            orders.append(Order(product, ask, ask_vol))
-                
-                # Checking if there are buy orders
-                if len(order_depth.buy_orders) > 0:
-                    for bid in order_depth.buy_orders.keys():
-                        bid_vol = order_depth.buy_orders[bid]
-                        if bid >= acceptable_price and bid_vol <= 20:
-                            print("SELL", str(-bid_vol) + "x", bid)
-                            orders.append(Order(product, bid, -bid_vol))
+                 # If statement checks if there are any SELL orders in the PEARLS market
+                self.do_order(orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product)
+
+                self.do_order(orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product)
 
                 result[product] = orders
 
