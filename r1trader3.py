@@ -29,7 +29,10 @@ class Trader:
       return ret
     
     def do_order(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
-        orders_sorted = sorted(bot_orders.keys())
+        reverse = False
+        if trade_made == "BUY":
+            reverse = True
+        orders_sorted = sorted(bot_orders.keys(), reverse)
         for prices in orders_sorted:
             if operator(prices, acceptable_price):
                 volume = bot_orders[prices]
@@ -40,7 +43,7 @@ class Trader:
                 # The code below therefore sends a BUY order at the price level of the ask,
                 # with the same quantity
                 # We expect this order to trade with the sell order
-                print(trade_made, str(volume) + "x", prices, end = "|")
+                print(trade_made, str(volume) + "x", prices)
                 if trade_made == "BUY":
                     order_lst.append(Order(product, prices,-volume))
                 elif trade_made == "SELL":
@@ -66,8 +69,8 @@ class Trader:
         # Iterate over all the keys (the available products) contained in the order depths
         for product in state.order_depths.keys():
             pos = state.position.get(product, 0)
-            max_buy = 20 - pos
-            max_sell = abs(-20 - pos)
+            max_buy = min(20 - pos, 20)
+            max_sell = min(abs(-20 - pos), 20)
          
             # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
             order_depth: OrderDepth = state.order_depths[product]
@@ -83,7 +86,7 @@ class Trader:
                 last_slope = self.last_slope[product]
 
                 if self.opposite_signs(slope, last_slope):
-                    # slope changed from ned to pos, buy
+                    # slope changed from neg to pos, buy
                     if slope > last_slope:
                         self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val, trade_made="BUY", product=product, order_lst = orders)
 
