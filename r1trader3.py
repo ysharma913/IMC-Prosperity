@@ -4,11 +4,11 @@ import operator
 
 class Trader:
     
-    def do_order(self, orders, operator, max_vol, acceptable_price, trade_made, product):
-        orders_sorted = sorted(orders.keys())
+    def do_order(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
+        orders_sorted = sorted(bot_orders.keys())
         for prices in orders_sorted:
             if operator(prices, acceptable_price):
-                volume = orders[prices]
+                volume = bot_orders[prices]
                 vol_to_trade = min(volume, max_vol)
                 max_vol -= vol_to_trade
                 # In case the lowest ask is lower than our fair value,
@@ -18,9 +18,9 @@ class Trader:
                 # We expect this order to trade with the sell order
                 print(trade_made, str(volume) + "x", prices, end = "|")
                 if trade_made == "BUY":
-                    orders.append(Order(product, prices,-volume))
+                    order_lst.append(Order(product, prices,-volume))
                 elif trade_made == "SELL":
-                    orders.append(Order(product, prices, -volume))
+                    order_lst.append(Order(product, prices, -volume))
             else: 
                 break
             if max_vol <= 0:
@@ -55,9 +55,9 @@ class Trader:
                 acceptable_price = BANANA_VALUE - 108
 
                 # If statement checks if there are any SELL orders in the PEARLS market
-                self.do_order(orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product)
+                self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product, order_lst = orders)
 
-                self.do_order(orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product)
+                self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product, order_lst = orders)
 
                 result[product] = orders
 
@@ -72,9 +72,9 @@ class Trader:
                 acceptable_price = PEARL_VALUE
 
                  # If statement checks if there are any SELL orders in the PEARLS market
-                self.do_order(orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product)
+                self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product, order_lst = orders)
 
-                self.do_order(orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product)
+                self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product, order_lst = orders)
 
                 result[product] = orders
 
