@@ -3,7 +3,10 @@ from datamodel import OrderDepth, TradingState, Order
 import operator
 
 class Trader:
-    
+
+    last_exp = {}
+    last_slope = {}
+
     def get_expected_price(self, state: TradingState) -> Dict[str, float]:
 
       ret: Dict[str, float] = {}
@@ -26,12 +29,8 @@ class Trader:
       return ret
     
     def do_order(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
-        print("DO ORDER")
         orders_sorted = sorted(bot_orders.keys())
         for prices in orders_sorted:
-            print(prices)
-            print(acceptable_price)
-            print(operator(prices, acceptable_price))
             if operator(prices, acceptable_price):
                 volume = bot_orders[prices]
                 vol_to_trade = min(volume, max_vol)
@@ -51,6 +50,10 @@ class Trader:
             if max_vol <= 0:
                 break
 
+    
+    def opposite_signs(self, x, y):
+        return (x < 0) if (y >= 0) else (y < 0)
+    
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
         """
         Only method required. It takes all buy and sell orders for all symbols as an input,
@@ -58,49 +61,54 @@ class Trader:
         """
         # Initialize the method output dict as an empty dict
         result = {}
-
-        # Values of product in market
-        PEARL_VALUE = 10000
-        BANANA_VALUE = 5000
+        expected_val_dict = self.get_expected_price(state)
 
         # Iterate over all the keys (the available products) contained in the order depths
         for product in state.order_depths.keys():
             pos = state.position.get(product, 0)
             max_buy = 20 - pos
             max_sell = abs(-20 - pos)
-            # Check if the current product is the 'BANANAS' product, only then run the order logic
-            if product == 'BANANAS':
          
-                # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
-                order_depth: OrderDepth = state.order_depths[product]
+            # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+            order_depth: OrderDepth = state.order_depths[product]
 
-                # Initialize the list of Orders to be sent as an empty list
-                orders: list[Order] = []
+            # Initialize the list of Orders to be sent as an empty list
+            orders: list[Order] = []
+            
+            
+            expected_val = expected_val_dict.get(product, slope)
+            slope = expected_val - self.last_exp 
+            last_slope = self.last_slope.get(product, slope)
 
-                acceptable_price = BANANA_VALUE - 108
+            if self.opposite_signs(slope, last_slope):
+                # slope changed from ned to pos, buy
+                if slope > last_slope:
+                    self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val, trade_made="BUY", product=product, order_lst = orders)
 
-                # If statement checks if there are any SELL orders in the PEARLS market
-                self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product, order_lst = orders)
+                elif slope < last_slope:
+                    self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val, trade_made="SELL", product=product, order_lst = orders)
 
-                self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product, order_lst = orders)
+            result[product] = orders
 
-                result[product] = orders
+            # if product == 'PEARLS':
+            #     # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+            #     order_depth: OrderDepth = state.order_depths[product]
 
-            if product == 'PEARLS':
-                # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
-                order_depth: OrderDepth = state.order_depths[product]
+            #     # Initialize the list of Orders to be sent as an empty list
+            #     orders: list[Order] = []
+    
+            #     expected_val = expected_val_dict.get(product, slope)
+            #     slope = expected_val - self.last_exp 
+            #     last_slope = self.last_slope.get(product, slope)
 
-                # Initialize the list of Orders to be sent as an empty list
-                orders: list[Order] = []
+            #     if self.opposite_signs(slope, last_slope):
+            #         # slope changed from ned to pos, buy
+            #         if slope > last_slope:
+            #             self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val, trade_made="BUY", product=product, order_lst = orders)
 
-                # Pearls are valued at 10000, and they are low-risk/stable
-                acceptable_price = PEARL_VALUE
-
-                 # If statement checks if there are any SELL orders in the PEARLS market
-                self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= acceptable_price, trade_made="BUY", product=product, order_lst = orders)
-
-                self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= acceptable_price, trade_made="SELL", product=product, order_lst = orders)
-
-                result[product] = orders
+            #         elif slope < last_slope:
+            #             self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val, trade_made="SELL", product=product, order_lst = orders)
+                
+            #     result[product] = orders
 
         return result
