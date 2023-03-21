@@ -74,10 +74,10 @@ class Trader:
 
             # Initialize the list of Orders to be sent as an empty list
             orders: list[Order] = []
-            
+            expected_val = expected_val_dict[product]
             
             if product in self.last_exp:
-                expected_val = expected_val_dict[product]
+                
                 last_exp = self.last_exp[product]
                 slope = (expected_val - last_exp)/1
                 last_slope = self.last_slope[product]
