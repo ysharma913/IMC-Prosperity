@@ -4,6 +4,27 @@ import operator
 
 class Trader:
     
+    def get_expected_price(self, state: TradingState) -> Dict[str, float]:
+
+      ret: Dict[str, float] = {}
+      for product in state.order_depths.keys():              
+        expected_val = 0
+        total = 0
+        buy_orders = state.order_depths[product].buy_orders
+        sell_orders = state.order_depths[product].sell_orders
+        for price in buy_orders.keys():
+            expected_val += price * buy_orders[price]
+            total += buy_orders[price]
+
+        for price in sell_orders.keys():
+            expected_val += price * sell_orders[price]
+            total += sell_orders[price]
+
+        ret[product] = expected_val/total
+            
+
+      return ret
+    
     def do_order(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
         orders_sorted = sorted(bot_orders.keys())
         for prices in orders_sorted:
