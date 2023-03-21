@@ -7,6 +7,17 @@ class Trader:
     last_exp = {}
     last_slope = {}
 
+    def _get_expected_total(self, orders: Dict[int, int]) -> Tuple[int]:
+        expected_val = 0
+        total = 0
+
+        for price in orders.keys():
+            expected_val += price * abs(buy_orders[price])
+            total += abs(orders[price])
+
+        return expected_val, total
+
+
     def get_expected_price(self, state: TradingState) -> Dict[str, float]:
 
       ret: Dict[str, float] = {}
@@ -18,16 +29,19 @@ class Trader:
         sell_orders = state.order_depths[product].sell_orders
         print(buy_orders)
         print(sell_orders)
-        for price in buy_orders.keys():
-            expected_val += price * abs(buy_orders[price])
-            total += abs(buy_orders[price])
+        
+        exp_buy, total_buy = self._get_expected_total(state.order_depths[product].buy_orders)
+        exp_sell, total_sell = self._get_expected_total()
 
-        for price in sell_orders.keys():
-            expected_val += price * abs(sell_orders[price])
-            total += abs(sell_orders[price])
+        expected_val = exp_buy + exp_sell
+        total = total_buy  + total_sell
 
-        ret[product] = expected_val/total if total != 0 else (self.last_slope[product]if product in self.last_slope else 0)
-            
+        expected_val_total = expected_val/total if total != 0 else (self.last_slope[product]if product in self.last_slope else 0)
+
+        expected_val_buy = exp_buy/total_buy if total_buy != 0 else 0
+        expected_val_sell = exp_sell/total_sell if total_sell != 0 else float('inf')
+        
+        ret[product] = (expected_val_total, expected_val_buy, expected_val_sell)
 
       return ret
     
