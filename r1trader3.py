@@ -31,7 +31,7 @@ class Trader:
         print(sell_orders)
         
         exp_buy, total_buy = self._get_expected_total(state.order_depths[product].buy_orders)
-        exp_sell, total_sell = self._get_expected_total()
+        exp_sell, total_sell = self._get_expected_total(state.order_depths[product].sell_orders)
 
         expected_val = exp_buy + exp_sell
         total = total_buy  + total_sell
