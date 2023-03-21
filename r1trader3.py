@@ -76,7 +76,7 @@ class Trader:
             orders: list[Order] = []
             
             
-            if product in expected_val_dict:
+            if product in self.last_exp:
                 expected_val = expected_val_dict[product]
                 last_exp = self.last_exp[product]
                 slope = (expected_val - last_exp)/1
