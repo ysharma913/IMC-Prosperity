@@ -32,7 +32,7 @@ class Trader:
         reverse = False
         if trade_made == "BUY":
             reverse = True
-        orders_sorted = sorted(bot_orders.keys(), reverse)
+        orders_sorted = sorted(bot_orders.keys(), reverse = reverse)
         for prices in orders_sorted:
             if operator(prices, acceptable_price):
                 volume = bot_orders[prices]
