@@ -23,7 +23,7 @@ class Trader:
             expected_val += price * sell_orders[price]
             total += sell_orders[price]
 
-        ret[product] = expected_val/total if total != 0 else self.last_slope[product]
+        ret[product] = expected_val/total if total != 0 else (self.last_slope[product]if product in self.last_slope else 0)
             
 
       return ret
