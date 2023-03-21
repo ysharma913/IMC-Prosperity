@@ -26,8 +26,12 @@ class Trader:
       return ret
     
     def do_order(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
+        print("DO ORDER")
         orders_sorted = sorted(bot_orders.keys())
         for prices in orders_sorted:
+            print(prices)
+            print(acceptable_price)
+            print(operator(prices, acceptable_price))
             if operator(prices, acceptable_price):
                 volume = bot_orders[prices]
                 vol_to_trade = min(volume, max_vol)
