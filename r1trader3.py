@@ -1,12 +1,13 @@
 from typing import Dict, List, Tuple
 from datamodel import OrderDepth, TradingState, Order
 import operator
+from collections import defaultdict
 
 class Trader:
 
     last_exp = {}
     last_slope = {}
-
+    exps = defaultdict(list)
     def _get_expected_total(self, orders: Dict[int, int]) -> Tuple[int]:
         expected_val = 0
         total = 0
@@ -74,73 +75,84 @@ class Trader:
     def opposite_signs(self, x, y):
         return (x < 0) if (y >= 0) else (y < 0)
     
+    def do_flood(self, trade_made, price , max_vol, product, order_lst):
+        if trade_made == "SELL":
+            max_vol *= -1
+        order_lst.append(Order(product, price, max_vol))
+
+
+
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
         """
         Only method required. It takes all buy and sell orders for all symbols as an input,
         and outputs a list of orders to be sent
         """
         # Initialize the method output dict as an empty dict
+        print(state.order_depths)
         result = {}
         expected_val_dict = self.get_expected_price(state)
-      
+       
 
         # Iterate over all the keys (the available products) contained in the order depths
         for product in state.order_depths.keys():
-
-            pos = state.position.get(product, 0)
-            max_buy = min(20 - pos, 20)
-            max_sell = min(abs(-20 - pos), 20)
-            expected_val_tup = expected_val_dict[product]
-            expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
-            # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
-            order_depth: OrderDepth = state.order_depths[product]
-
-            # Initialize the list of Orders to be sent as an empty list
-            orders: list[Order] = []
-         
-            if product in self.last_exp:
-                
-                last_exp = self.last_exp[product]
-                slope = (expected_val_total - last_exp)/1
-                last_slope = self.last_slope[product]
-
-                if self.opposite_signs(slope, last_slope):
-                    print("expected_val",  expected_val_total)
-                    print("expected_val_buy", expected_val_buy)
-                    print("expected_val_sell", expected_val_sell)
-                    # slope changed from neg to pos, buy
-                    if slope > last_slope:
-                        self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val_buy, trade_made="BUY", product=product, order_lst = orders)
-
-                    elif slope < last_slope:
-                        self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val_sell, trade_made="SELL", product=product, order_lst = orders)
-
-                result[product] = orders
-                self.last_slope[product] = slope
-            else:
-                self.last_slope[product] = 0
-
             
-            self.last_exp[product] = expected_val_total
-            # if product == 'PEARLS':
-            #     # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
-            #     order_depth: OrderDepth = state.order_depths[product]
+            if product == 'BANANAS':
+                pos = state.position.get(product, 0)
+                max_buy = 20 - pos
+                max_sell= abs(-20 - pos)
+                expected_val_tup = expected_val_dict[product]
+                expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
+                # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+                order_depth: OrderDepth = state.order_depths[product]
 
-            #     # Initialize the list of Orders to be sent as an empty list
-            #     orders: list[Order] = []
-    
-            #     expected_val = expected_val_dict.get(product, slope)
-            #     slope = expected_val - self.last_exp 
-            #     last_slope = self.last_slope.get(product, slope)
+                # Initialize the list of Orders to be sent as an empty list
+                orders: list[Order] = []
+            
+                if product in self.last_exp:
+                    
+                    last_exp = self.last_exp[product]
+                    slope = (expected_val_total - last_exp)/1
+                    last_slope = self.last_slope[product]
 
-            #     if self.opposite_signs(slope, last_slope):
-            #         # slope changed from ned to pos, buy
-            #         if slope > last_slope:
-            #             self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val, trade_made="BUY", product=product, order_lst = orders)
+                    max_ask = max(order_depth.sell_orders.keys())
+                    min_bid = min(order_depth.buy_orders.keys())
 
-            #         elif slope < last_slope:
-            #             self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val, trade_made="SELL", product=product, order_lst = orders)
+                    bid_ask = max_ask - min_bid
+                    stretch = bid_ask * 1/5
+                    sell_flood_price = max_ask - stretch 
+                    buy_flood_price = min_bid + stretch
+
+
+
+                    # why check slopes, just check if last_exp < this_exp, its going down so sell, if > then going up so buy
+                    if self.opposite_signs(slope, last_slope):
+                        print("expected_val",  expected_val_total)
+                        print("expected_val_buy", expected_val_buy)
+                        print("expected_val_sell", expected_val_sell)
+                        print("slope: ", slope)
+                        print("slope: ", slope)
+                        # slope changed from neg to pos, buy
+                        if slope > last_slope:
+                            self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= expected_val_sell, trade_made="BUY", product=product, order_lst = orders)
+
+                        elif slope < last_slope:
+                            self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val_buy, trade_made="SELL", product=product, order_lst = orders)
+
+                    # flood asks, we have bought!!
+                    elif slope < 0:
+                        self.do_flood(trade_made="SELL", price = sell_flood_price, max_vol = 2, product=product, order_lst = orders)
+
+                    elif slope > 0:
+                        self.do_flood(trade_made="BUY", price = buy_flood_price, max_vol = 2, product=product, order_lst = orders)
+
+                    result[product] = orders
+                    self.last_slope[product] = slope
+                else:
+                    self.last_slope[product] = 0
+
                 
-            #     result[product] = orders
-
+                self.last_exp[product] = expected_val_total
+                print(result[product])
+                self.exps[product].append(expected_val_total)
+        print(self.exps)
         return result
