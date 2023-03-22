@@ -242,8 +242,8 @@ class Trader:
                 self.do_banana_trade(state, result, expected_val_dict)
             elif product == "PEARLS":
                 pos = state.position.get(product, 0)
-                max_buy = min(20 - pos, 20)
-                max_sell = min(abs(-20 - pos), 20)
+                max_buy = 20 - pos
+                max_sell = abs(-20 - pos)
                 # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
                 order_depth: OrderDepth = state.order_depths[product]
 
@@ -282,13 +282,15 @@ class Trader:
                     if max_buy <= 0:
                         break
                 
-                if max_buy > 0 and not hadBOrder:
-                    less = (max_buy+9)//10
-                    for i in range(10000-less - 3, 10000 - 3):
-                        vol = 10 if max_buy >= 10 else max_buy
-                        print("BUY", str(-vol) + "x", i, end = "|")
-                        orders.append(Order(product, i, vol))
-                        max_buy -= vol
+                # if max_buy > 0 and not hadBOrder:
+                #     less = (max_buy+9)//10
+                #     for i in range(10000-less - 3, 10000 - 3):
+                #         vol = 10 if max_buy >= 10 else max_buy
+                #         print("BUY", str(-vol) + "x", i, end = "|")
+                #         orders.append(Order(product, i, vol))
+                #         max_buy -= vol
+                #         if max_sell <= 0:
+                #             break
 
                 # The below code block is similar to the one above,
                 # the difference is that it finds the highest bid (buy order)
@@ -312,14 +314,15 @@ class Trader:
                     if max_sell <= 0:
                         break
                 
-                if max_sell > 0 and not hadSOrder:
-                    less = (max_sell+9)//10
-                    for i in range(10000+less + 3, 10000 + 3, -1):
-                        vol = 10 if max_sell >= 10 else max_sell
-                        print("SELL", str(vol) + "x", i, end= "|")
-                        orders.append(Order(product, i, -vol))
-                        max_sell -= vol
-                        if max_sell 
+                # if max_sell > 0 and not hadSOrder:
+                #     less = (max_sell+9)//10
+                #     for i in range(10000+less + 3, 10000 + 3, -1):
+                #         vol = 10 if max_sell >= 10 else max_sell
+                #         print("SELL", str(vol) + "x", i, end= "|")
+                #         orders.append(Order(product, i, -vol))
+                #         max_sell -= vol
+                #         if max_sell <= 0:
+                #             break
                 # Add all the above orders to the result dict
                 result[product] = orders
                 print()
