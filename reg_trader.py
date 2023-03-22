@@ -63,7 +63,7 @@ class Trader:
           elif trade.seller != '':
               self.all_buys[symbol].remove(min(self.all_buys[symbol]))
 
-    def do_order_match(bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
+    def do_order_match(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
         reverse = False
         if trade_made == "SELL":
             reverse = True
@@ -90,7 +90,7 @@ class Trader:
         return max_vol
     
 
-    def do_flood(self, product, volume, price, order_lst, match):
+    def do_flood(self, product, volume, price, order_lst):
         if volume < 0:
             print("SELL", str(volume) + "x", price)
         elif volume > 0:
@@ -193,19 +193,16 @@ class Trader:
             if expected_val_total < min_threshold:
 
                 vol_left = self.do_order_match(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= min_ask, trade_made="BUY", product=product, order_lst = orders)
-
-
-               # do_order_match(bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
                 #
                 # volume + == buy
-                self.do_flood(product = product, volume = vol_left, price = min_ask, order_lst = orders, match = True)
+                # self.do_flood(product = product, volume = vol_left, price = min_ask, order_lst = orders)
     
 
             # # flood buys to push price down 
             # else:
             #     vol = max_sell / 2
             #     for _ in range(2):
-            #         self.do_order(product = product, volume = vol, price = this_min_bid - 1, order_lst = orders)
+            #         self.do_flood(product = product, volume = vol, price = this_min_bid - 1, order_lst = orders)
 
         elif expected_val_total > middle:
             # either flood or sell
@@ -215,13 +212,14 @@ class Trader:
 
                 vol_left = self.do_order_match(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= max_bid, trade_made="SELL", product=product, order_lst = orders)
 
-                self.do_order(product = product, volume = -vol_left, price = max_bid, order_lst = orders, match = True)
+                # volume - == SELL
+                self.do_flood(product = product, volume = -vol_left, price = min_ask, order_lst = orders)
 
             # # flood sells
             # else:
             #     vol = max_buy / 2
             #     for _ in range(2):
-            #         self.do_order(product = product, volume = -vol, price = this_max_ask + 1, order_lst = orders)
+            #         self.do_flood(product = product, volume = -vol, price = this_max_ask + 1, order_lst = orders)
 
 
 
