@@ -100,6 +100,41 @@ class Trader:
     def opposite_signs(self, x, y):
         return (x < 0) if (y >= 0) else (y < 0)
     
+
+    def do_flood(self, product, volume, price, order_lst):
+        if volume < 0:
+            print("SELL", str(volume) + "x", price)
+        elif volume > 0:
+            print("BUY", str(volume) + "x", price)
+        if volume != 0:
+            order_lst.append(Order(product, price, volume))
+
+    def do_order_match(bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
+        reverse = False
+        if trade_made == "SELL":
+            reverse = True
+        orders_sorted = sorted(bot_orders.keys(), reverse = reverse)
+        for prices in orders_sorted:
+            if operator(prices, acceptable_price):
+                volume = abs(bot_orders[prices])
+                vol_to_trade = min(volume, max_vol)
+                max_vol -= vol_to_trade
+                # In case the lowest ask is lower than our fair value,
+                # This presents an opportunity for us to buy cheaply
+                # The code below therefore sends a BUY order at the price level of the ask,
+                # with the same quantity
+                # We expect this order to trade with the sell order
+                print(trade_made, str(vol_to_trade) + "x", prices)
+                if trade_made == "BUY":
+                    order_lst.append(Order(product, prices, vol_to_trade))
+                elif trade_made == "SELL":
+                    order_lst.append(Order(product, prices, -vol_to_trade))
+            else: 
+                break
+            if max_vol <= 0:
+                break
+        return max_vol
+    
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
         """
         Only method required. It takes all buy and sell orders for all symbols as an input,
@@ -108,6 +143,8 @@ class Trader:
         # Initialize the method output dict as an empty dict
         result = {}
         expected_val_dict = self.get_expected_price(state)
+        
+        
       
 
         # Iterate over all the keys (the available products) contained in the order depths
@@ -120,7 +157,13 @@ class Trader:
             expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
             # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
             order_depth: OrderDepth = state.order_depths[product]
-            
+
+            this_min_ask = min(order_depth.sell_orders.keys())
+            this_max_bid  = max(order_depth.buy_orders.keys())
+
+            this_max_ask = max(order_depth.sell_orders.keys())
+            this_min_bid  = min(order_depth.buy_orders.keys())
+                
             if product in state.own_trades.keys():
               self._append_buys(product, state.own_trades[product])
 
@@ -141,7 +184,26 @@ class Trader:
                     # slope changed from neg to pos, buy
                     if slope > last_slope:
                         min_ask = min(order_depth.sell_orders.keys()) * 1.005
-                        self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= min_ask, trade_made="BUY", product=product, order_lst = orders)
+
+                        vol = self.do_order_match(
+                            bot_orders = order_depth.sell_orders, 
+                            operator = operator.lt, 
+                            max_vol = max_buy,
+                            acceptable_price= min_ask, 
+                            trade_made="BUY", 
+                            product=product,
+                            order_lst = orders)
+                        
+                        self.do_flood(
+                            product=product,
+                            volume = -(max_buy - vol),
+                            price = this_max_ask,
+                            order_lst=orders
+                            )
+                        # self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= min_ask, trade_made="BUY", product=product, order_lst = orders)
+
+                        
+
 
                     elif slope < last_slope:
                         min_buy = min(self.all_buys[product]) if len(self.all_buys[product]) > 0 else None
