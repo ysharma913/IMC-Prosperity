@@ -140,6 +140,9 @@ class Trader:
         
         this_min_ask = min(order_depth.sell_orders.keys())
         this_max_bid  = max(order_depth.buy_orders.keys())
+
+        this_max_ask = max(order_depth.sell_orders.keys())
+        this_min_bid  = min(order_depth.buy_orders.keys())
         self.cache.pop()
         
         self.cache.append((this_max_bid, this_min_ask, expected_val_total))
@@ -156,6 +159,19 @@ class Trader:
             ask_model(state.timestamp),
             mid_model(state.timestamp)
         )
+
+        print("Current Expected Value: ", expected_val_total)
+        print("Middle Expected Value: ", middle)
+        print("Max Bid Pred Value: ", max_bid)
+        print("Min Ask Pred Value: ", min_ask)
+
+        print("Max Bid True Value: ", this_max_bid)
+        print("Min Bid True Value: ", this_min_bid)
+
+        print("Max Ask True Value: ", this_max_ask)
+        print("Min Ask True Value: ", this_min_ask)
+
+
 
 
 
@@ -177,11 +193,11 @@ class Trader:
                 self.do_order(product = product, volume = max_buy, price = min_ask, order_lst = orders)
     
 
-            # flood sells to push price down 
-            else:
-                vol = max_sell / 2
-                for _ in range(2):
-                    self.do_order(product = product, volume = -vol, price = max_bid, order_lst = orders)
+            # # flood buys to push price down 
+            # else:
+            #     vol = max_sell / 2
+            #     for _ in range(2):
+            #         self.do_order(product = product, volume = vol, price = this_min_bid - 1, order_lst = orders)
 
         elif expected_val_total > middle:
             # either flood or sell
@@ -191,11 +207,11 @@ class Trader:
                 # self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= max_bid, trade_made="SELL", product=product, order_lst = orders)
                 self.do_order(product = product, volume = -max_sell, price = max_bid, order_lst = orders)
 
-            # flood buys
-            else:
-                vol = max_buy / 2
-                for _ in range(2):
-                    self.do_order(product = product, volume = vol, price = min_ask, order_lst = orders)
+            # # flood sells
+            # else:
+            #     vol = max_buy / 2
+            #     for _ in range(2):
+            #         self.do_order(product = product, volume = -vol, price = this_max_ask + 1, order_lst = orders)
 
 
 
