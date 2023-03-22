@@ -113,7 +113,14 @@ class Trader:
 
                     elif slope < last_slope:
                         self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= expected_val_total, trade_made="SELL", product=product, order_lst = orders)
+                
+                # thing going down, force it more down
+                elif slope < 0:
+
+
                 self.last_slope[product] = slope
+
+
             else:
                 self.last_slope[product] = 0
 
@@ -141,3 +148,72 @@ class Trader:
             #     result[product] = orders
 
         return result
+def main():
+    timestamp = 1000
+
+    listings = {
+        "BANANAS": Listing(
+            symbol="BANANAS", 
+            product="BANANAS", 
+            denomination= "SEASHELLS"
+        ),
+        "PEARLS": Listing(
+            symbol="PEARLS", 
+            product="PEARLS", 
+            denomination= "SEASHELLS"
+        ),
+    }
+
+    od = OrderDepth()
+    od.buy_orders = {10: 7, 9: 5}
+    od.sell_orders = {11: -4, 12: -8}
+
+    od2 = OrderDepth()
+    od2.buy_orders = {142: 3, 141: 5}
+    od2.sell_orders = {144: -5, 145: -8}
+
+    order_depths = {
+        "BANANAS": od,
+        "PEARLS": od2,	
+    }
+
+    own_trades = {
+        "BANANAS": [],
+        "PEARLS": []
+    }
+
+    market_trades = {
+        "BANANAS": [
+            Trade(
+                symbol="BANANAS",
+                price=11,
+                quantity=4,
+                buyer="",
+                seller="",
+                timestamp=900
+            )
+        ],
+        "PEARLS": []
+    }
+
+    position = {
+        "BANANAS": 3,
+        "PEARLS": -5
+    }
+
+    observations = {}
+
+    state = TradingState(
+        timestamp=timestamp,
+        listings=listings,
+        order_depths=order_depths,
+        own_trades = own_trades,
+        market_trades = market_trades,
+        position = position,
+        observations = observations
+    )
+    trader1 = Trader()
+    trader1.run(state)
+
+if __name__ == "__main__":
+    main()
