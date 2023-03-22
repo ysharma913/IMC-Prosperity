@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import re
 
 # Open the file for reading
-file_name = "5ac99c2f-7f01-44a5-b2cd-4e5200d2038f.log"
+file_name = "996b4e15-868c-4514-b0e9-c87c40995b73.log"
 banana_values = []
 with open("logs/" + file_name, 'r') as file:
     # Loop through each line in the file
