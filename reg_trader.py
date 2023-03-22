@@ -15,19 +15,36 @@ class Trader:
 
 
 
-    def _best_fit_line(self, offset):
+    def _gen_best_fit_line(self, x, y):
+        return np.poly1d(np.polyfit(x, y))
 
-        # x,y = zip(*pairs)
-        # x,y = np.array(x), np.array(y)
 
-        # assert len(pairs) == 10000
-        # return np.poly1d(np.polyfit(x, y, 1))
+    def _best_fit_line(self, offset: int):
+        # assert len(self.cache) == 10000
 
-        add = len(self.cache) * 100
-        times= list(range(offset, offset + add, 100))
-        times = np.array(times)
-        prices = np.array(self.cache)
-        return np.poly1d(np.polyfit(times, prices, 1))
+        ### do patel timestamp logix
+
+        length = len(self.cache) * 100
+        times= list(range(offset, offset + length, 100))
+
+        # times = []
+
+        max_bid, min_ask, mid = zip(*self.cache)
+        max_bid, min_ask, mid = (
+            np.array(max_bid),
+            np.array(min_ask),
+            np.array(mid)
+        )
+
+        return (
+            self._gen_best_fit_line(times, max_bid),
+            self._gen_best_fit_line(times, min_ask),
+            self._gen_best_fit_line(times, mid)
+        )
+    
+    # def take_action(self, threshold: float, curr_expec: float, pred_expec):
+        
+        
 
 
 
