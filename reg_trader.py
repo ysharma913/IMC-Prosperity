@@ -319,6 +319,7 @@ class Trader:
                         print("SELL", str(vol) + "x", i, end= "|")
                         orders.append(Order(product, i, -vol))
                         max_sell -= vol
+                        if max_sell 
                 # Add all the above orders to the result dict
                 result[product] = orders
                 print()
