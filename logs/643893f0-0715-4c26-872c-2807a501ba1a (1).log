@@ -1,0 +1,312 @@
+Sandbox logs:
+68382 Lambda errors have reached maximum value for submission 643893f0-0715-4c26-872c-2807a501ba1a
+
+
+Submission logs:
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "8b9414d7-a409-46fc-9800-34e1d677519f", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "3974d5b2-2f5b-4845-bc30-3ce2df555ad4", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "a99c9116-b0b1-4cb0-98e3-d343eae0ad5b", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "9784d132-cc97-4da2-898c-39f053e01788", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "a1ed1923-ab8b-4ea2-b31b-83c0cb6f6a29", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "90e328a3-b962-4b04-a300-1f66e7a99e66", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "17044b6c-1957-4c1a-8fef-7c6892c00299", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "a86c6e1d-9e6d-4387-8aa0-5901d16f79c6", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "e0493a17-446b-4c48-8c72-1ae17aec58e1", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "f72b6fd1-7697-46ab-80a7-79d293a9b1a1", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "aa9b6639-77d5-40c4-98d9-7279f38ac9d1", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "1e95548d-0f81-471b-bc63-516053bddef9", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "5ad836e1-bb3c-44fc-90ac-a45ec4eacf9e", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "610e7fad-ed1a-410d-9313-3079cf5aea4e", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "60c79ec1-70ce-42ad-b06f-0bea8d48e308", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "06d1c023-71e2-426f-87c6-d18fbd985e79", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "3d11db57-e83b-42cf-bfd0-012ca94d6caa", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "9b0e8577-d7f2-4e68-89b3-7d359d69f335", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "c9824de7-d9f2-459c-af57-a1492764966f", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "f861a6eb-3177-489f-bb6e-13237a92e02a", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "cf81f789-d482-4897-a434-b538d1d699e8", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "e10449e6-beb7-4198-ba63-86731277a45c", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "da8d5caf-6b97-4aa0-9bc8-a4f3f224c81b", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "5465e037-777b-4175-a805-93be7d743dec", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "62ab338b-2049-4142-a718-0d1cfe6de6ea", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "3b3e18e6-d55f-4116-9b8c-e0347ba65f3c", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "302b50d3-23da-4558-9272-808696b0803d", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "ffaea717-5c20-44b4-b4f7-aa8cf88b8693", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "4d79a3bb-7528-4018-b56d-63f4d843caef", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "3b338814-3c99-4f28-9a4b-c67f47dd8434", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "da8ae1b8-3fb9-4abb-9d38-2cb38cf5a83e", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "a8fef071-7759-412e-828e-822cc7774f54", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "2610c699-b704-4d43-82ca-14b8f9f59329", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "632dcc82-a577-4316-91ed-efc79ebb5627", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "cb2bb794-fe86-4951-be1f-f87a72945269", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "f010f2e0-e444-47b7-8422-0470f6610f49", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "2dc4f1a4-ac58-4eec-9d07-fbf30413c9e1", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "376f73ab-e262-4273-b3a0-db0105e135ad", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "e4bee013-e589-4129-92d8-e7d549cef2ae", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "22193834-c7e5-405e-8d71-4f4f1049482c", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "b289103b-90cc-4459-92cc-9936b8d29493", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "e4c83d4a-06f6-42ba-8a57-ea045217e926", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "4818e5a7-3e6c-4cb5-b6f0-b3f8bb5b7186", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "687f186f-c29b-4e43-b1af-e4e3b2fd2d24", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "b86e0b64-c7d8-4ebd-9816-539ce2fc7a89", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "5114f432-2b5c-40f1-b772-bbc48a62bd56", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "8aa2c6af-9997-4e96-a935-b4c48d5517ff", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "d17f962b-c120-4cff-8d1b-bf2ac7b53ce7", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "5ff15afa-056c-4038-b37d-9ac45f0cd56a", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "3f1d59bb-2f9e-4edc-b142-72139a95cabe", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "cfa823cb-13bb-4b17-b363-720a9beb2960", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "a209a00b-aac6-46a4-818d-15267c139900", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "b54bd4ab-a1e6-41a9-8cbc-4e895bcafa2e", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "17f9ff02-524f-47c8-8221-1db7462aa884", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "99db1637-e419-46b9-b89b-61aee7f1510c", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:29Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "4e5eaa60-5a52-41d8-a479-7b4a56ae29d6", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "9553e26b-a9a8-438d-9df3-e2acf637dd0d", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "4f77bdae-7330-4a03-ade6-242d57ae4b80", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "3c0de2f7-1080-4647-8519-2634f258bb74", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "45f8ee00-456f-498d-b071-46c692ba34b3", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "491f42ca-67e1-4067-9ecd-c30325d54ec4", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "9d468db2-f770-4c6d-a65f-b6264347fd63", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "0da9efb7-3e79-42b9-aade-66d1d6754a2d", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "e463028c-7d54-4b7f-b559-b7bbc98aae35", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "0cc90615-ca55-4890-8f9d-58c51ae4e254", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "bf261ed3-58ac-496f-8cc6-287dee9cdfc6", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "710670f9-22d7-44b5-99f9-a01fc127eff7", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "6a92530c-d71e-46e8-8933-7032f807d2a8", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "85745f32-8f85-4687-b60b-5e5ce4615bc8", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "979d9e99-a28a-41ac-8164-03707f1bc941", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "abdb0fc5-3308-42f6-84de-20128b873265", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "360900c2-2d36-43d0-9eba-e15b81b270ce", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "a583fca4-7d50-4322-beb7-febca87d67f7", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "2ee7dc0c-a78c-41fd-868d-ec07cc98ae43", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "9d642e9a-6d51-4bbd-ab5b-2b88abafb64e", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "6d614098-1f97-460f-a241-cb2f6cd08470", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "66baeaa9-7439-4014-982f-0ac0b6f690b3", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "3ffee830-10d9-41ba-a08a-a1c3fe37435c", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "f20f0393-63fd-427a-b9ce-64ce67251dee", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "8e31a25b-4831-41b3-94fd-cf30dca85054", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "2a3682f4-0807-4063-aa05-0248e6f12cd6", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "9b95af73-d659-49c1-b835-e033bdc55fa7", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "f2192054-6402-4312-a728-dcf3b5f1a4fa", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "f00988e1-ee66-4b76-a8d1-ebd55f675004", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "f9cd0cdd-f72b-4fc0-b92a-55e63b58394a", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "ba87eb58-5d14-494d-a3f0-b4c43cbaf2b5", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "e4bb5bb7-0f15-4155-947d-aaffa3b43ba4", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "982aca79-9e97-4889-965b-e6dbc3cb0e5a", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "8c89ff19-e779-42e3-a49d-34578b036dd4", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "85ef2718-f0e1-4209-944e-cffca59fcf62", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "ad548018-c089-4a62-9c12-5d16715f1b3d", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "20356d33-9cd1-4604-9b88-2474fe49f202", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "28c8a32b-baaf-463d-a8a0-4eb2550e0844", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "091cd940-a846-4424-bc14-a790b4ec6a8a", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "6d6f6b76-b3b1-4b7c-a1dc-21ee5de87f06", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "c3b9e503-d025-45ee-9b6b-6457ac98f884", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "8d086bf7-5060-4997-9d0a-7cf8cad7473b", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "cdf4ed63-62b7-49db-b4ff-3acfbcf2b2fd", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "43d18142-d2f5-49f6-8cad-f4b8664301b3", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "6fccff04-f0b1-4a87-ba31-188de270b26a", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+2023-03-22T01:03:30Z {"errorMessage": "Syntax error in module 'app': expected an indented block (trader.py, line 102)", "errorType": "Runtime.UserCodeSyntaxError", "requestId": "e9b76c6c-8718-4354-928c-da85936ca01b", "stackTrace": ["  File \"/var/task/trader.py\" Line 102\n                pos = state.position.get(product, 0)\n"]}
+
+
+Activities log:
+day;timestamp;product;bid_price_1;bid_volume_1;bid_price_2;bid_volume_2;bid_price_3;bid_volume_3;ask_price_1;ask_volume_1;ask_price_2;ask_volume_2;ask_price_3;ask_volume_3;mid_price;profit_and_loss
+0;0;PEARLS;9998;9;9995;23;;;10005;23;;;;;10001.5;0.0
+0;0;BANANAS;4893;9;4892;23;;;4899;23;;;;;4896.0;0.0
+0;100;PEARLS;10002;1;10000;2;9998;13;10004;1;10005;44;;;10003.0;0.0
+0;100;BANANAS;4897;1;4893;9;4892;49;4898;22;4899;23;;;4897.5;0.0
+0;200;PEARLS;10002;1;10000;2;9998;13;10004;2;10005;65;;;10003.0;0.0
+0;200;BANANAS;4897;1;4893;9;4892;71;4898;22;4899;45;;;4897.5;0.0
+0;300;PEARLS;10002;1;10000;2;9998;13;10004;2;10005;91;;;10003.0;0.0
+0;300;BANANAS;4897;1;4893;35;4892;71;4898;21;4899;45;4900;26;4897.5;0.0
+0;400;PEARLS;10002;1;10000;2;9998;21;10004;4;10005;117;;;10003.0;0.0
+0;400;BANANAS;4894;8;4893;63;4892;71;4896;4;4898;21;4899;73;4895.0;0.0
+0;500;PEARLS;10002;1;10000;2;9998;29;10004;5;10005;140;;;10003.0;0.0
+0;500;BANANAS;4894;16;4893;87;4892;71;4896;3;4898;21;4899;97;4895.0;0.0
+0;600;PEARLS;10002;1;10000;2;9998;29;10004;7;10005;168;;;10003.0;0.0
+0;600;BANANAS;4894;16;4893;87;4892;101;4896;3;4898;21;4899;127;4895.0;0.0
+0;700;PEARLS;10002;1;10000;2;9998;29;10004;8;10005;190;;;10003.0;0.0
+0;700;BANANAS;4894;15;4893;87;4892;102;4896;3;4898;44;4899;127;4895.0;0.0
+0;800;PEARLS;9998;29;9996;9;9995;214;10004;9;10005;214;;;10001.0;0.0
+0;800;BANANAS;4894;16;4893;87;4892;102;4896;3;4898;69;4899;127;4895.0;0.0
+0;900;BANANAS;4894;16;4893;87;4892;103;4896;3;4898;90;4899;127;4895.0;0.0
+0;900;PEARLS;9998;18;9996;10;9995;234;10004;10;10005;234;;;10001.0;0.0
+0;1000;PEARLS;9998;18;9996;11;9995;264;10004;11;10005;264;;;10001.0;0.0
+0;1000;BANANAS;4894;16;4893;87;4892;103;4896;3;4897;1;4898;120;4895.0;0.0
+0;1100;BANANAS;4894;16;4893;87;4892;103;4896;9;4897;1;4898;142;4895.0;0.0
+0;1100;PEARLS;9998;18;9996;12;9995;285;10002;6;10004;12;10005;285;10000.0;0.0
+0;1200;PEARLS;9998;18;9996;13;9995;307;10002;6;10004;13;10005;307;10000.0;0.0
+0;1200;BANANAS;4894;15;4893;87;4892;103;4896;9;4897;1;4898;165;4895.0;0.0
+0;1300;BANANAS;4894;15;4893;87;4892;103;4896;9;4897;26;4898;165;4895.0;0.0
+0;1300;PEARLS;9998;18;9996;13;9995;332;10002;5;10004;13;10005;332;10000.0;0.0
+0;1400;PEARLS;9998;18;9996;13;9995;355;10000;6;10002;5;10004;13;9999.0;0.0
+0;1400;BANANAS;4894;15;4893;87;4892;103;4896;9;4897;49;4898;165;4895.0;0.0
+0;1500;BANANAS;4894;15;4893;87;4892;103;4896;8;4897;70;4898;165;4895.0;0.0
+0;1500;PEARLS;9998;14;9996;14;9995;375;10000;6;10002;5;10004;14;9999.0;0.0
+0;1600;PEARLS;9998;14;9996;16;9995;403;10000;6;10002;5;10004;16;9999.0;0.0
+0;1600;BANANAS;4894;15;4893;87;4892;103;4896;8;4897;100;4898;165;4895.0;0.0
+0;1700;BANANAS;4894;13;4893;87;4892;103;4896;8;4897;128;4898;165;4895.0;0.0
+0;1700;PEARLS;9998;14;9996;16;9995;431;10000;6;10002;5;10004;16;9999.0;0.0
+0;1800;PEARLS;9998;14;9996;16;9995;454;10000;2;10002;15;10004;16;9999.0;0.0
+0;1800;BANANAS;4894;13;4893;87;4892;103;4895;10;4896;8;4897;151;4894.5;0.0
+0;1900;BANANAS;4894;12;4893;87;4892;103;4895;10;4896;8;4897;183;4894.5;0.0
+0;1900;PEARLS;9998;14;9996;18;9995;484;10000;2;10002;15;10004;18;9999.0;0.0
+0;2000;PEARLS;9998;14;9996;20;9995;505;10000;2;10002;15;10004;20;9999.0;0.0
+0;2000;BANANAS;4894;12;4893;87;4892;103;4895;10;4896;10;4897;204;4894.5;0.0
+0;2100;BANANAS;4894;12;4893;87;4892;103;4895;10;4896;12;4897;230;4894.5;0.0
+0;2100;PEARLS;9998;14;9996;22;9995;531;10000;2;10002;15;10004;22;9999.0;0.0
+0;2200;PEARLS;9998;10;9996;23;9995;551;10000;2;10002;15;10004;23;9999.0;0.0
+0;2200;BANANAS;4894;12;4893;87;4892;103;4895;10;4896;33;4897;230;4894.5;0.0
+0;2300;PEARLS;9998;10;9996;25;9995;573;10000;2;10002;15;10004;25;9999.0;0.0
+0;2300;BANANAS;4894;11;4893;87;4892;103;4895;10;4896;57;4897;230;4894.5;0.0
+0;2400;PEARLS;9998;10;9996;27;9995;593;10000;2;10002;15;10004;27;9999.0;0.0
+0;2400;BANANAS;4894;11;4893;87;4892;103;4895;10;4896;79;4897;230;4894.5;0.0
+0;2500;PEARLS;9998;13;9996;29;9995;614;10000;2;10002;15;10004;29;9999.0;0.0
+0;2500;BANANAS;4894;11;4893;87;4892;103;4895;10;4896;81;4897;251;4894.5;0.0
+0;2600;PEARLS;9998;13;9996;30;9995;643;10002;16;10004;30;10005;643;10000.0;0.0
+0;2600;BANANAS;4894;7;4893;87;4892;103;4895;10;4896;111;4897;251;4894.5;0.0
+0;2700;PEARLS;9998;20;9996;32;9995;664;10002;16;10004;32;10005;664;10000.0;0.0
+0;2700;BANANAS;4894;7;4893;87;4892;103;4895;10;4896;134;4897;251;4894.5;0.0
+0;2800;PEARLS;9998;20;9996;32;9995;691;10002;16;10004;32;10005;691;10000.0;0.0
+0;2800;BANANAS;4894;7;4893;87;4892;103;4895;10;4896;134;4897;278;4894.5;0.0
+0;2900;PEARLS;9998;20;9996;34;9995;711;10002;16;10004;34;10005;711;10000.0;0.0
+0;2900;BANANAS;4894;7;4893;87;4892;103;4895;10;4896;134;4897;300;4894.5;0.0
+0;3000;PEARLS;9998;20;9996;35;9995;740;10002;16;10004;35;10005;740;10000.0;0.0
+0;3000;BANANAS;4894;7;4893;87;4892;103;4895;9;4896;134;4897;330;4894.5;0.0
+0;3100;PEARLS;9998;25;9996;36;9995;767;10002;16;10004;36;10005;767;10000.0;0.0
+0;3100;BANANAS;4894;7;4893;87;4892;109;4895;9;4896;134;4897;331;4894.5;0.0
+0;3200;PEARLS;9998;25;9996;36;9995;791;10000;5;10002;9;10004;36;9999.0;0.0
+0;3200;BANANAS;4894;7;4893;87;4892;109;4895;9;4896;134;4897;331;4894.5;0.0
+0;3300;PEARLS;9998;25;9996;37;9995;815;10000;4;10002;9;10004;37;9999.0;0.0
+0;3300;BANANAS;4894;7;4893;87;4892;109;4895;9;4896;134;4897;332;4894.5;0.0
+0;3400;PEARLS;9998;35;9996;39;9995;842;10000;4;10002;9;10004;39;9999.0;0.0
+0;3400;BANANAS;4894;7;4893;87;4892;119;4895;9;4896;134;4897;334;4894.5;0.0
+0;3500;PEARLS;9998;35;9996;39;9995;868;10000;4;10002;19;10004;39;9999.0;0.0
+0;3500;BANANAS;4894;11;4893;87;4892;119;4895;9;4896;144;4897;334;4894.5;0.0
+0;3600;PEARLS;9998;35;9996;39;9995;895;10000;4;10002;27;10004;39;9999.0;0.0
+0;3600;BANANAS;4894;11;4893;87;4892;119;4895;9;4896;152;4897;334;4894.5;0.0
+0;3700;PEARLS;9998;38;9996;39;9995;920;10000;4;10002;27;10004;39;9999.0;0.0
+0;3700;BANANAS;4894;11;4893;91;4892;144;4895;9;4896;152;4897;334;4894.5;0.0
+0;3800;PEARLS;9998;38;9996;39;9995;944;10000;4;10002;27;10004;39;9999.0;0.0
+0;3800;BANANAS;4894;11;4893;91;4892;168;4895;9;4896;152;4897;334;4894.5;0.0
+0;3900;PEARLS;9998;38;9996;41;9995;968;10000;4;10002;27;10004;41;9999.0;0.0
+0;3900;BANANAS;4894;11;4893;91;4892;194;4895;9;4896;152;4897;334;4894.5;0.0
+0;4000;PEARLS;9998;38;9996;42;9995;998;10000;3;10002;27;10004;42;9999.0;0.0
+0;4000;BANANAS;4894;10;4893;91;4892;195;4895;9;4896;152;4897;334;4894.5;0.0
+0;4100;PEARLS;10000;2;9998;38;9996;44;10002;31;10004;44;10005;1020;10001.0;0.0
+0;4100;BANANAS;4894;10;4893;91;4892;219;4895;9;4896;152;4897;338;4894.5;0.0
+0;4200;PEARLS;10000;2;9998;38;9996;45;10002;26;10004;45;10005;1048;10001.0;0.0
+0;4200;BANANAS;4894;10;4893;92;4892;247;4895;9;4896;152;4897;338;4894.5;0.0
+0;4300;PEARLS;10000;2;9998;38;9996;45;10002;34;10004;45;10005;1074;10001.0;0.0
+0;4300;BANANAS;4894;10;4893;92;4892;273;4895;9;4896;152;4897;346;4894.5;0.0
+0;4400;PEARLS;10000;2;9998;38;9996;45;10002;34;10004;45;10005;1102;10001.0;0.0
+0;4400;BANANAS;4894;10;4893;92;4892;301;4895;9;4896;152;4897;346;4894.5;0.0
+0;4500;PEARLS;10000;2;9998;38;9996;45;10002;34;10004;45;10005;1128;10001.0;0.0
+0;4500;BANANAS;4894;10;4893;92;4892;327;4895;9;4896;152;4897;346;4894.5;0.0
+0;4600;PEARLS;10000;2;9998;38;9996;45;10002;34;10004;45;10005;1149;10001.0;0.0
+0;4600;BANANAS;4894;10;4893;92;4892;348;4895;9;4896;152;4897;346;4894.5;0.0
+0;4700;PEARLS;10000;2;9998;43;9996;45;10002;34;10004;45;10005;1175;10001.0;0.0
+0;4700;BANANAS;4894;10;4893;97;4892;374;4895;9;4896;152;4897;346;4894.5;0.0
+0;4800;PEARLS;10000;2;9998;43;9996;46;10002;34;10004;46;10005;1197;10001.0;0.0
+0;4800;BANANAS;4894;10;4893;98;4892;396;4895;8;4896;152;4897;346;4894.5;0.0
+0;4900;PEARLS;10000;2;9998;43;9996;48;10002;34;10004;48;10005;1219;10001.0;0.0
+0;4900;BANANAS;4894;10;4893;122;4892;396;4895;8;4896;152;4897;346;4894.5;0.0
+0;5000;PEARLS;10000;2;9998;52;9996;49;10002;34;10004;49;10005;1249;10001.0;0.0
+0;5000;BANANAS;4894;10;4893;132;4892;426;4895;8;4896;152;4897;346;4894.5;0.0
+0;5100;PEARLS;10000;2;9998;52;9996;49;10002;34;10004;49;10005;1275;10001.0;0.0
+0;5100;BANANAS;4894;10;4893;158;4892;426;4895;8;4896;152;4897;346;4894.5;0.0
+0;5200;PEARLS;10000;7;9998;59;9996;51;10002;34;10004;51;10005;1298;10001.0;0.0
+0;5200;BANANAS;4894;17;4893;183;4892;426;4895;8;4896;152;4897;346;4894.5;0.0
+0;5300;BANANAS;4894;17;4893;205;4892;426;4895;8;4896;152;4897;346;4894.5;0.0
+0;5300;PEARLS;9998;54;9996;51;9995;1320;10002;34;10004;51;10005;1320;10000.0;0.0
+0;5400;BANANAS;4894;47;4893;205;4892;426;4895;8;4896;152;4897;346;4894.5;0.0
+0;5400;PEARLS;9998;54;9996;51;9995;1350;10002;34;10004;51;10005;1350;10000.0;0.0
+0;5500;PEARLS;9998;54;9996;52;9995;1378;10002;34;10004;52;10005;1378;10000.0;0.0
+0;5500;BANANAS;4894;75;4893;205;4892;426;4895;7;4896;152;4897;346;4894.5;0.0
+0;5600;PEARLS;9998;56;9996;54;9995;1401;10002;34;10004;54;10005;1401;10000.0;0.0
+0;5600;BANANAS;4895;20;4894;75;4893;205;4896;152;4897;346;4898;402;4895.5;0.0
+0;5700;BANANAS;4895;51;4894;75;4893;205;4896;148;4897;346;4898;402;4895.5;0.0
+0;5700;PEARLS;9998;56;9996;55;9995;1431;10002;34;10004;55;10005;1431;10000.0;0.0
+0;5800;BANANAS;4895;51;4894;105;4893;205;4896;148;4897;348;4898;402;4895.5;0.0
+0;5800;PEARLS;9998;56;9996;57;9995;1459;10002;34;10004;57;10005;1459;10000.0;0.0
+0;5900;PEARLS;9998;56;9996;59;9995;1480;10002;34;10004;59;10005;1480;10000.0;0.0
+0;5900;BANANAS;4895;74;4894;105;4893;205;4896;148;4897;348;4898;402;4895.5;0.0
+0;6000;PEARLS;9998;56;9996;59;9995;1510;10002;44;10004;59;10005;1510;10000.0;0.0
+0;6000;BANANAS;4895;74;4894;135;4893;205;4896;148;4897;348;4898;402;4895.5;0.0
+0;6100;BANANAS;4895;75;4894;159;4893;205;4896;148;4897;348;4898;402;4895.5;0.0
+0;6100;PEARLS;9998;56;9996;60;9995;1534;10002;44;10004;60;10005;1534;10000.0;0.0
+0;6200;BANANAS;4895;79;4894;188;4893;205;4896;147;4897;348;4898;402;4895.5;0.0
+0;6200;PEARLS;9998;59;9996;61;9995;1563;10002;44;10004;61;10005;1563;10000.0;0.0
+0;6300;PEARLS;9998;59;9996;61;9995;1585;10002;44;10004;61;10005;1585;10000.0;0.0
+0;6300;BANANAS;4895;79;4894;210;4893;205;4896;147;4897;351;4898;402;4895.5;0.0
+0;6400;PEARLS;9998;59;9996;62;9995;1608;10002;50;10004;62;10005;1608;10000.0;0.0
+0;6400;BANANAS;4895;79;4894;234;4893;205;4896;147;4897;353;4898;402;4895.5;0.0
+0;6500;BANANAS;4895;79;4894;256;4893;205;4896;147;4897;353;4898;402;4895.5;0.0
+0;6500;PEARLS;9998;59;9996;62;9995;1630;10002;50;10004;62;10005;1630;10000.0;0.0
+0;6600;BANANAS;4895;79;4894;285;4893;205;4896;147;4897;353;4898;402;4895.5;0.0
+0;6600;PEARLS;9998;59;9996;64;9995;1657;10002;50;10004;64;10005;1657;10000.0;0.0
+0;6700;PEARLS;9998;59;9996;65;9995;1687;10002;50;10004;65;10005;1687;10000.0;0.0
+0;6700;BANANAS;4895;79;4894;316;4893;205;4896;147;4897;353;4898;402;4895.5;0.0
+0;6800;PEARLS;10000;5;9998;59;9996;67;10002;50;10004;67;10005;1716;10001.0;0.0
+0;6800;BANANAS;4895;78;4894;316;4893;236;4896;147;4897;353;4898;402;4895.5;0.0
+0;6900;PEARLS;10000;5;9998;59;9996;69;10002;50;10004;69;10005;1743;10001.0;0.0
+0;6900;BANANAS;4895;78;4894;316;4893;265;4896;147;4897;353;4898;402;4895.5;0.0
+0;7000;PEARLS;10000;5;9998;59;9996;70;10002;50;10004;70;10005;1773;10001.0;0.0
+0;7000;BANANAS;4895;78;4894;317;4893;295;4896;147;4897;353;4898;402;4895.5;0.0
+0;7100;PEARLS;9998;59;9996;71;9995;1803;10002;57;10004;71;10005;1803;10000.0;0.0
+0;7100;BANANAS;4895;78;4894;317;4893;326;4896;147;4897;353;4898;409;4895.5;0.0
+0;7200;PEARLS;9998;59;9996;72;9995;1825;10002;58;10004;72;10005;1825;10000.0;0.0
+0;7200;BANANAS;4895;78;4894;317;4893;349;4896;147;4897;353;4898;411;4895.5;0.0
+0;7300;PEARLS;9998;59;9996;73;9995;1850;10002;58;10004;73;10005;1850;10000.0;0.0
+0;7300;BANANAS;4895;78;4894;317;4893;375;4896;147;4897;353;4898;411;4895.5;0.0
+0;7400;PEARLS;9998;59;9996;73;9995;1872;10002;57;10004;73;10005;1872;10000.0;0.0
+0;7400;BANANAS;4895;78;4894;339;4893;375;4896;147;4897;353;4898;411;4895.5;0.0
+0;7500;PEARLS;9998;59;9996;73;9995;1901;10002;57;10004;73;10005;1901;10000.0;0.0
+0;7500;BANANAS;4895;78;4894;368;4893;375;4896;147;4897;353;4898;411;4895.5;0.0
+0;7600;PEARLS;9998;59;9996;73;9995;1928;10002;56;10004;73;10005;1928;10000.0;0.0
+0;7600;BANANAS;4895;78;4894;395;4893;375;4896;147;4897;353;4898;411;4895.5;0.0
+0;7700;PEARLS;9998;59;9996;74;9995;1953;10002;61;10004;74;10005;1953;10000.0;0.0
+0;7700;BANANAS;4895;78;4894;421;4893;375;4896;147;4897;353;4898;411;4895.5;0.0
+0;7800;PEARLS;9998;59;9996;74;9995;1976;10002;61;10004;74;10005;1976;10000.0;0.0
+0;7800;BANANAS;4895;78;4894;444;4893;375;4896;147;4897;353;4898;411;4895.5;0.0
+0;7900;PEARLS;9998;59;9996;76;9995;1998;10002;68;10004;76;10005;1998;10000.0;0.0
+0;7900;BANANAS;4895;102;4894;444;4893;375;4896;147;4897;353;4898;411;4895.5;0.0
+0;8000;PEARLS;10000;3;9998;59;9996;78;10002;68;10004;78;10005;2026;10001.0;0.0
+0;8000;BANANAS;4895;102;4894;444;4893;375;4896;116;4897;353;4898;411;4895.5;0.0
+0;8100;PEARLS;10000;3;9998;59;9996;78;10002;68;10004;78;10005;2051;10001.0;0.0
+0;8100;BANANAS;4895;102;4894;444;4893;375;4896;91;4897;353;4898;411;4895.5;0.0
+0;8200;PEARLS;10000;3;9998;59;9996;80;10002;68;10004;80;10005;2076;10001.0;0.0
+0;8200;BANANAS;4895;102;4894;444;4893;375;4896;60;4897;353;4898;411;4895.5;0.0
+0;8300;PEARLS;10000;3;9998;68;9996;80;10002;68;10004;80;10005;2104;10001.0;0.0
+0;8300;BANANAS;4895;102;4894;444;4893;375;4896;23;4897;353;4898;411;4895.5;0.0
+0;8400;PEARLS;10000;3;9998;73;9996;80;10002;68;10004;80;10005;2133;10001.0;0.0
+0;8400;BANANAS;4895;102;4894;444;4893;375;4897;342;4898;411;4899;459;4896.0;0.0
+0;8500;PEARLS;10000;3;9998;73;9996;82;10002;68;10004;82;10005;2158;10001.0;0.0
+0;8500;BANANAS;4896;25;4895;102;4894;444;4897;337;4898;411;4899;459;4896.5;0.0
+0;8600;PEARLS;10000;3;9998;73;9996;84;10002;68;10004;84;10005;2185;10001.0;0.0
+0;8600;BANANAS;4896;54;4895;102;4894;444;4897;337;4898;411;4899;459;4896.5;0.0
+0;8700;PEARLS;10000;3;9998;73;9996;86;10002;68;10004;86;10005;2207;10001.0;0.0
+0;8700;BANANAS;4896;78;4895;102;4894;444;4897;336;4898;411;4899;459;4896.5;0.0
+0;8800;PEARLS;10000;3;9998;73;9996;87;10002;68;10004;87;10005;2237;10001.0;0.0
+0;8800;BANANAS;4896;109;4895;102;4894;444;4897;336;4898;411;4899;459;4896.5;0.0
+0;8900;PEARLS;10000;3;9998;73;9996;87;10002;68;10004;87;10005;2263;10001.0;0.0
+0;8900;BANANAS;4896;135;4895;102;4894;444;4897;336;4898;411;4899;459;4896.5;0.0
+0;9000;PEARLS;10000;3;9998;73;9996;87;10002;68;10004;87;10005;2286;10001.0;0.0
+0;9000;BANANAS;4896;135;4895;125;4894;444;4897;336;4898;411;4899;459;4896.5;0.0
+0;9100;PEARLS;10000;2;9998;73;9996;87;10002;68;10004;87;10005;2308;10001.0;0.0
+0;9100;BANANAS;4896;157;4895;125;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9200;PEARLS;10000;2;9998;73;9996;89;10002;68;10004;89;10005;2333;10001.0;0.0
+0;9200;BANANAS;4896;184;4895;125;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9300;PEARLS;10000;2;9998;74;9996;90;10002;57;10004;90;10005;2362;10001.0;0.0
+0;9300;BANANAS;4896;186;4895;154;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9400;PEARLS;10000;2;9998;74;9996;92;10002;56;10004;92;10005;2390;10001.0;0.0
+0;9400;BANANAS;4896;186;4895;184;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9500;PEARLS;10000;2;9998;74;9996;94;10002;55;10004;94;10005;2414;10001.0;0.0
+0;9500;BANANAS;4896;212;4895;184;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9600;PEARLS;10000;2;9998;74;9996;95;10002;61;10004;95;10005;2434;10001.0;0.0
+0;9600;BANANAS;4896;233;4895;184;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9700;BANANAS;4896;264;4895;184;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9700;PEARLS;9998;74;9996;96;9995;2464;10000;3;10002;60;10004;96;9999.0;0.0
+0;9800;PEARLS;9998;75;9996;98;9995;2488;10000;3;10002;60;10004;98;9999.0;0.0
+0;9800;BANANAS;4896;265;4895;210;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9900;BANANAS;4896;256;4895;234;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
+0;9900;PEARLS;9998;75;9996;98;9995;2512;10000;3;10002;60;10004;98;9999.0;0.0
+0;10000;PEARLS;9998;75;9996;98;9995;2539;10000;3;10002;60;10004;98;9999.0;0.0
+0;10000;BANANAS;4896;256;4895;261;4894;444;4897;341;4898;411;4899;459;4896.5;0.0
