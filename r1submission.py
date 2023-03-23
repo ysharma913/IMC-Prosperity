@@ -136,8 +136,8 @@ class Trader:
             expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
             # idea - we want to trade on momentum - if coconuts is going down, we want to force it down to profit of pina
             #2 - just force momentum every X iterations and trade off it?? 
-            if product == "COCONUTS":
-                if expected_val_total 
+            # if product == "COCONUTS":
+            #     if expected_val_total 
 
 
             # if product == "BANANAS":
