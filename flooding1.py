@@ -3,7 +3,7 @@ from datamodel import OrderDepth, TradingState, Order, Trade, Listing
 from collections import deque
 import operator
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import math, statistics
 import pandas as pd
 
@@ -33,15 +33,15 @@ class Trader:
         self.regressions['PEARLS'] = self.pearlHistory
         self.regressions['BANANAS'] = self.bananaHistory
 
-        self.regressions['COCONUTS'] = self.coconutHistory
-        self.regressions['PINA_COLADAS'] = self.pearlHistory
+        # self.regressions['COCONUTS'] = self.coconutHistory
+        # self.regressions['PINA_COLADAS'] = self.pearlHistory
 
-        # self.regressions['COCONUTS'] = []
-        # self.regressions['PINA_COLADAS'] = []
+        self.regressions['COCONUTS'] = []
+        self.regressions['PINA_COLADAS'] = []
     
     def calculate_spread(self):
-        coconuts = np.array(self.regressions['COCONUTS'][:500])
-        coladas = np.array(self.regressions['PINA_COLADAS'][:500])
+        coconuts = np.array(self.regressions['COCONUTS'])
+        coladas = np.array(self.regressions['PINA_COLADAS'])
 
         ratio = pd.Series(coladas/coconuts)
 
@@ -49,18 +49,19 @@ class Trader:
         ratios_mavg20 = ratio.rolling(window=20, center=False).mean()
         std_20 = ratio.rolling(window=20, center=False).std()
         zscore_20_5 = (ratios_mavg5 - ratios_mavg20)/std_20
-
-        buy = ratio.copy()
-        sell = ratio.copy()
-        buy[zscore_20_5>-1.25] = 0
-        sell[zscore_20_5<1.25] = 0
-        return buy.iloc[-1], sell.iloc[-1]
+     
+        # buy = ratio.copy()
+        # sell = ratio.copy()
+        # buy[zscore_20_5>-1] = 0
+        # sell[zscore_20_5<1] = 0
+        # return buy.iloc[-1], sell.iloc[-1]
+        return zscore_20_5.iloc[-1]
 
 
 
     def plotSpread(self):
         coconuts = np.array(self.regressions['COCONUTS'][:500])
-        coladas = np.array(self.regressions['PINA_COLADAS'][:-1])
+        coladas = np.array(self.regressions['PINA_COLADAS'][:500])
         spread = np.subtract(coconuts, coladas)
 
         coconuts1 = (coconuts - np.min(coconuts)) * (1.883 - 1.873)/(np.max(coconuts) - np.min(coconuts)) + 1.873
@@ -94,8 +95,12 @@ class Trader:
         ratio.plot()
         buy = ratio.copy()
         sell = ratio.copy()
-        buy[zscore_20_5>-1.25] = 0
-        sell[zscore_20_5<1.25] = 0
+        buy[zscore_20_5>-1] = 0
+        sell[zscore_20_5<1] = 0
+        # print(zscore_20_5)
+        # print(buy)
+        # print(sell)
+
 
         buy.plot(color='g', linestyle='None', marker='^')
         sell.plot(color='r', linestyle='None', marker='^')
@@ -130,13 +135,13 @@ class Trader:
                 # The code below therefore sends a BUY order at the price level of the ask,
                 # with the same quantity
                 # We expect this order to trade with the sell order
+                tradeHappened = True
                 print(trade_made, str(vol_to_trade) + "x", prices)
                 if trade_made == "BUY":
                     order_lst.append(Order(product, prices, vol_to_trade))
-                    tradeHappened = True
+                 
                 elif trade_made == "SELL":
                     order_lst.append(Order(product, prices, -vol_to_trade))
-                    tradeHappened = True
             else: 
                 break
             if max_vol <= 0:
@@ -189,47 +194,50 @@ class Trader:
                 pina_orders: list[Order] = []
                 pina_order_depth: OrderDepth = state.order_depths[product_pina]
 
-                buy_ticker, sell_ticker = self.calculate_spread()
+
                 # append to regressions:
                 coconut_midpoint = self.do_midpoint(order_depth.sell_orders, order_depth.buy_orders)
                 colada_midpoint =  self.do_midpoint(pina_order_depth.sell_orders, pina_order_depth.buy_orders)
                 self.regressions[product].append(coconut_midpoint)
                 self.regressions[product_pina].append(colada_midpoint)
 
+                z_score = self.calculate_spread()
+      
 
+                print("Timestamp", state.timestamp)
                 if state.timestamp/100 >= WINDOW_SIZE:
-                   
+              
                     # need to figure out how many pina coladas to buy?
-                    if buy_ticker and not sell_ticker:
-
+                    print("z-score", z_score)
+                    if z_score > 1:
                         print("BUYING BOTH")
-                        self.do_order(bot_orders = pina_order_depth.sell_orders, operator = operator.lt, max_vol = max_buy_pina * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+                        # self.do_order(bot_orders = pina_order_depth.sell_orders, operator = operator.lt, max_vol = max_buy_pina * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product_pina, order_lst = pina_orders)
 
-                        self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product, order_lst = orders)
+                        # self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product, order_lst = orders)
 
-                    elif sell_ticker and not buy_ticker:
+                    elif z_score < -1:
                         print("SELLING BOTH")
-                        self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina * 0.5, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
+                        # self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina * 0.5, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
 
-                        self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell * 0.5, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
+                        # self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell * 0.5, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
                 
-                result[product] = orders
-                result[product_pina] = pina_orders
+                # result[product] = orders
+                # result[product_pina] = pina_orders
 
-            elif product != "PINA_COLADAS":
-                maxBid, minAsk = max(order_depth.buy_orders.keys()), min(order_depth.sell_orders.keys())
-                midpoint = (maxBid + minAsk)/2
-                productVal = self.getProductValue(product, midpoint)
+            # elif product != "PINA_COLADAS":
+            #     maxBid, minAsk = max(order_depth.buy_orders.keys()), min(order_depth.sell_orders.keys())
+            #     midpoint = (maxBid + minAsk)/2
+            #     productVal = self.getProductValue(product, midpoint)
 
-                self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= productVal, trade_made="BUY", product=product, order_lst = orders)
+            #     self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= productVal, trade_made="BUY", product=product, order_lst = orders)
 
-                self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= productVal, trade_made="SELL", product=product, order_lst = orders)
+            #     self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= productVal, trade_made="SELL", product=product, order_lst = orders)
 
-                result[product] = orders
+            #     result[product] = orders
 
-                # print(f'{product} Bid Quantity: {len(order_depth.buy_orders)}')
-                # print(f'{product} Ask Quantity: {len(order_depth.sell_orders)}')
-                # print(f'{product} Mid Price: {midpoint}')
+            #     # print(f'{product} Bid Quantity: {len(order_depth.buy_orders)}')
+            #     # print(f'{product} Ask Quantity: {len(order_depth.sell_orders)}')
+            #     # print(f'{product} Mid Price: {midpoint}')
 
         return result
     
@@ -247,6 +255,16 @@ def main():
             product="PEARLS", 
             denomination= "SEASHELLS"
         ),
+        "COCONUTS": Listing(
+            symbol="COCONUTS", 
+            product="COCONUTS", 
+            denomination= "SEASHELLS"
+        ),
+        "PINA_COLADAS": Listing(
+            symbol="PINA_COLADAS", 
+            product="PINA_COLADAS", 
+            denomination= "SEASHELLS"
+        ),
     }
 
     od = OrderDepth()
@@ -258,23 +276,25 @@ def main():
     od2.sell_orders = {144: -5, 145: -8}
 
     od3 = OrderDepth()
-    od3.buy_orders = {8003: 214}
-    od3.sell_orders = {8006: -214}
+    od3.buy_orders = {142: 3, 141: 5}
+    od3.sell_orders = {144: -5, 145: -8}
 
     od4 = OrderDepth()
-    od4.buy_orders = {15013: 36, 15012: 52}
-    od4.sell_orders = {15016: -88}
+    od4.buy_orders = {142: 3, 141: 5}
+    od4.sell_orders = {144: -5, 145: -8}
 
     order_depths = {
         "BANANAS": od,
         "PEARLS": od2,	
         "COCONUTS": od3,
-        "PINA_COLADAS": od4
+        "PINA_COLADAS": od4,	
     }
 
     own_trades = {
         "BANANAS": [],
-        "PEARLS": []
+        "PEARLS": [],
+        "COCONUTS": [],
+        "PINA_COLADAS": []
     }
 
     market_trades = {
@@ -293,7 +313,9 @@ def main():
 
     position = {
         "BANANAS": 3,
-        "PEARLS": -5
+        "PEARLS": -5,
+        "COCONUTS": 3,
+        "PINA_COLADAS": -5
     }
 
     observations = {}
@@ -312,8 +334,5 @@ def main():
 
     # trader1.plotSpread()
 
-
-
 if __name__ == "__main__":
     main()
-

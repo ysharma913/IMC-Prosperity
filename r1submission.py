@@ -253,6 +253,16 @@ def main():
             product="PEARLS", 
             denomination= "SEASHELLS"
         ),
+        "COCONUTS": Listing(
+            symbol="COCONUTS", 
+            product="COCONUTS", 
+            denomination= "SEASHELLS"
+        ),
+        "PINA_COLADAS": Listing(
+            symbol="PINA_COLADAS", 
+            product="PINA_COLADAS", 
+            denomination= "SEASHELLS"
+        ),
     }
 
     od = OrderDepth()
@@ -263,14 +273,26 @@ def main():
     od2.buy_orders = {142: 3, 141: 5}
     od2.sell_orders = {144: -5, 145: -8}
 
+    od3 = OrderDepth()
+    od3.buy_orders = {142: 3, 141: 5}
+    od3.sell_orders = {144: -5, 145: -8}
+
+    od4 = OrderDepth()
+    od4.buy_orders = {142: 3, 141: 5}
+    od4.sell_orders = {144: -5, 145: -8}
+
     order_depths = {
         "BANANAS": od,
         "PEARLS": od2,	
+        "COCONUTS": od3,
+        "PINA_COLADAS": od4,	
     }
 
     own_trades = {
         "BANANAS": [],
-        "PEARLS": []
+        "PEARLS": [],
+        "COCONUTS": [],
+        "PINA_COLADAS": []
     }
 
     market_trades = {
@@ -289,7 +311,9 @@ def main():
 
     position = {
         "BANANAS": 3,
-        "PEARLS": -5
+        "PEARLS": -5,
+        "COCONUTS": 3,
+        "PINA_COLADAS": -5
     }
 
     observations = {}
