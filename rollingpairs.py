@@ -12,6 +12,7 @@ class Trader:
     initalizedStart = False
     limits = {'PEARLS': 20, 'BANANAS': 20, 'COCONUTS': 600, 'PINA_COLADAS': 300}
     regressions = {}
+    last_ticker = 0
 
     def initData(self):
         self.initalizedStart = True
@@ -133,17 +134,29 @@ class Trader:
                     # need to figure out how many pina coladas to buy?
                     print("z-score", z_score)
                     if z_score > z_thresh:
+                        self.last_ticker = z_score
                         print("BUYING BOTH")
                         self.do_order(bot_orders = pina_order_depth.sell_orders, operator = operator.lt, max_vol = max_buy_pina, acceptable_price= 1000000, trade_made="BUY", product=product_pina, order_lst = pina_orders)
 
                         self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= 1000000, trade_made="BUY", product=product, order_lst = orders)
 
                     elif z_score < -z_thresh:
+                        self.last_ticker = z_score
                         print("SELLING BOTH")
                         self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
 
                         self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
-                
+
+                    elif z_score > 1.05 and self.last_ticker > 0:
+                        self.do_order(bot_orders = pina_order_depth.sell_orders, operator = operator.lt, max_vol = max_buy_pina, acceptable_price= 1000000, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+
+                        self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= 1000000, trade_made="BUY", product=product, order_lst = orders)
+                    
+                    elif z_score < -1.05 and self.last_ticker < 0:
+                        self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
+
+                        self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
+
                 result[product] = orders
                 result[product_pina] = pina_orders
 
