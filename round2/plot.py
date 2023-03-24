@@ -62,8 +62,8 @@ def plot(log_file):
 
   
 
-  plt.plot(times, max_buys, linestyle = 'dashed', linewidth=1, zorder = -1)
-  plt.plot(times, min_asks, linestyle = 'dashed', linewidth=1, zorder = -1)
+  # plt.plot(times, max_buys, linestyle = 'dashed', linewidth=1, zorder = -1)
+  # plt.plot(times, min_asks, linestyle = 'dashed', linewidth=1, zorder = -1)
   plt.plot(times, pred_mids, linestyle = 'dashed', linewidth=1, zorder = -1)
   plt.plot(times, true_mids, linestyle = 'dashed', linewidth=1, zorder = -1)
 

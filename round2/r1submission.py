@@ -9,7 +9,7 @@ class Trader:
     current_iter = 0
     cache = deque(())
 
-    window_size = 10
+    window_size = 5
 
     def rolling_mean(self):
         x,y = zip(*self.cache)
