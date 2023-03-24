@@ -7,7 +7,6 @@ import math, statistics
 import pandas as pd
 
 
-
 class Trader:
 
     cache = list()
