@@ -176,7 +176,7 @@ class Trader:
             max_buy = limit - pos
             max_sell = abs(-limit - pos)
             order_depth: OrderDepth = state.order_depths[product]
-
+            orders: list[Order] = []
             if product == "COCONUTS":
 
                 product_pina = "PINA_COLADAS"
@@ -197,7 +197,7 @@ class Trader:
                 self.regressions[product_pina].append(colada_midpoint)
 
 
-                if state.timestamp/100 < WINDOW_SIZE:
+                if state.timestamp/100 >= WINDOW_SIZE:
                    
                     # need to figure out how many pina coladas to buy?
                     if buy_ticker and not sell_ticker:
@@ -212,13 +212,14 @@ class Trader:
                         self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina * 0.5, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
 
                         self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell * 0.5, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
+                
+                result[product] = orders
+                result[product_pina] = pina_orders
 
             elif product != "PINA_COLADAS":
                 maxBid, minAsk = max(order_depth.buy_orders.keys()), min(order_depth.sell_orders.keys())
                 midpoint = (maxBid + minAsk)/2
                 productVal = self.getProductValue(product, midpoint)
-
-                orders: list[Order] = []
 
                 self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= productVal, trade_made="BUY", product=product, order_lst = orders)
 
