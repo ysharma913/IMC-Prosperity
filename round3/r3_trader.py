@@ -15,7 +15,44 @@ class MeanReversion:
       self.Z_THRESH = z_thresh
 
 
+  def rolling_mean(self):
+      return np.array(self.cache[-self.z_window_size - 1:-1]).mean()
+
+
   def make_orders(self, state, product):
+
+    expected_val_tup = expected_val_dict[product]
+    expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
+
+    self.cache.append(expected_val_total)
+
+    # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+    order_depth: OrderDepth = state.order_depths[product]
+    
+    # Initialize the list of Orders to be sent as an empty list
+    orders: list[Order] = []
+
+    
+    buy_prices = None
+    sell_prices = None
+    middle = -1
+    if len(self.cache) >= Trader.window_size:
+      z_score = self.z_score(expected_val_total)
+      z_thresh = 1.5
+      middle = self.rolling_mean()
+
+      if z_score < -z_thresh :
+          buy_prices = self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - 1, trade_made="BUY", product=product, order_lst = orders)
+      elif z_score > z_thresh:
+          sell_prices = self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + 1, trade_made="SELL", product=product, order_lst = orders)
+      else:
+        self.marketmake(product=product, tradeMade="BUY", quantity=10, acceptablePrice=middle, volume=max_buy, orderList=orders)
+        self.marketmake(product=product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
+
+
+
+    result[product] = orders
+
 
 
 class Trader:
