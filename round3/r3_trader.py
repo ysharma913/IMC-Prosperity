@@ -178,7 +178,7 @@ class MeanReversion:
 
                     StaticTrader.marketmake(product=self.product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
 
-            return orders
+            return {self.product: orders}
         
 class Trader:
 
@@ -366,10 +366,12 @@ class Trader:
             #     precedent_lst = []
             precedent_lst = self.wrappers[product]
             for algo in precedent_lst:
-                orders = algo.make_orders(state)
-                if len(orders) > 0:
-                    result[product] = orders
-                    break
+                order_dict = algo.make_orders(state)
+                for prod in order_dict:
+                    order_lst = order_dict[prod]
+                    if len(order_dict[prod]) > 0:
+                        result[prod] = order_lst
+                        break
               
                 # expected_val_tup = expected_val_dict[product]
                 # expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
