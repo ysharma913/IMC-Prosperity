@@ -33,19 +33,19 @@ class Trader:
         self.regressions['PEARLS'] = self.pearlHistory
         self.regressions['BANANAS'] = self.bananaHistory
 
-        # self.regressions['COCONUTS'] = self.coconutHistory
-        # self.regressions['PINA_COLADAS'] = self.pearlHistory
+        self.regressions['COCONUTS'] = self.coconutHistory
+        self.regressions['PINA_COLADAS'] = self.pearlHistory
 
-        self.regressions['COCONUTS'] = []
-        self.regressions['PINA_COLADAS'] = []
+        # self.regressions['COCONUTS'] = []
+        # self.regressions['PINA_COLADAS'] = []
     
     def calculate_spread(self):
-        coconuts = np.array(self.regressions['COCONUTS'])
-        coladas = np.array(self.regressions['PINA_COLADAS'])
+        coconuts = np.array(self.regressions['COCONUTS'][:500])
+        coladas = np.array(self.regressions['PINA_COLADAS'][:500])
 
         ratio = pd.Series(coladas/coconuts)
 
-        ratios_mavg5 = ratio.rolling(window=5, center=False).mean()
+        ratios_mavg5 = ratio.rolling(window=10, center=False).mean()
         ratios_mavg20 = ratio.rolling(window=20, center=False).mean()
         std_20 = ratio.rolling(window=20, center=False).std()
         zscore_20_5 = (ratios_mavg5 - ratios_mavg20)/std_20
@@ -175,7 +175,7 @@ class Trader:
         if not self.initalizedStart:
             self.initData()
         
-        z_thresh = 1.1
+        z_thresh = 1.25
         result = {}
         for product in state.order_depths.keys():
             pos = state.position.get(product, 0)
