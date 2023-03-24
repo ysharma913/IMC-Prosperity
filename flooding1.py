@@ -33,19 +33,19 @@ class Trader:
         self.regressions['PEARLS'] = self.pearlHistory
         self.regressions['BANANAS'] = self.bananaHistory
 
-        self.regressions['COCONUTS'] = self.coconutHistory
-        self.regressions['PINA_COLADAS'] = self.pearlHistory
+        # self.regressions['COCONUTS'] = self.coconutHistory
+        # self.regressions['PINA_COLADAS'] = self.pearlHistory
 
-        # self.regressions['COCONUTS'] = []
-        # self.regressions['PINA_COLADAS'] = []
+        self.regressions['COCONUTS'] = []
+        self.regressions['PINA_COLADAS'] = []
     
     def calculate_spread(self):
-        coconuts = np.array(self.regressions['COCONUTS'][:500])
-        coladas = np.array(self.regressions['PINA_COLADAS'][:500])
+        coconuts = np.array(self.regressions['COCONUTS'])
+        coladas = np.array(self.regressions['PINA_COLADAS'])
 
         ratio = pd.Series(coladas/coconuts)
 
-        ratios_mavg5 = ratio.rolling(window=10, center=False).mean()
+        ratios_mavg5 = ratio.rolling(window=5, center=False).mean()
         ratios_mavg20 = ratio.rolling(window=20, center=False).mean()
         std_20 = ratio.rolling(window=20, center=False).std()
         zscore_20_5 = (ratios_mavg5 - ratios_mavg20)/std_20
@@ -57,8 +57,24 @@ class Trader:
         # return buy.iloc[-1], sell.iloc[-1]
         return zscore_20_5.iloc[-1]
 
-
-
+    def marketmake(self, product, tradeMade, quantity, acceptablePrice, volume, orderList):
+        if tradeMade == "BUY":
+            less = (volume+quantity-1)//quantity
+            for i in range(int(acceptablePrice) - 2, int(acceptablePrice) - 2 - less, -1):
+                vol = 10 if volume >= 10 else volume
+                print("BUY", str(-vol) + "x", i)
+                orderList.append(Order(product, i, vol))
+                volume -= vol
+        elif tradeMade == "SELL":
+            less = (volume+quantity-1)//quantity
+            for i in range(int(acceptablePrice) + 2, int(acceptablePrice) + 2 + less):
+                vol = 10 if volume >= 10 else volume
+                print("SELL", str(vol) + "x", i)
+                orderList.append(Order(product, i, -vol))
+                volume -= vol
+        else:
+            return None
+    
     def plotSpread(self):
         coconuts = np.array(self.regressions['COCONUTS'][:500])
         coladas = np.array(self.regressions['PINA_COLADAS'][:500])
