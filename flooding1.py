@@ -3,7 +3,7 @@ from datamodel import OrderDepth, TradingState, Order, Trade, Listing
 from collections import deque
 import operator
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import math, statistics
 import pandas as pd
 
@@ -32,11 +32,34 @@ class Trader:
         self.initalizedStart = True
         self.regressions['PEARLS'] = self.pearlHistory
         self.regressions['BANANAS'] = self.bananaHistory
+
         self.regressions['COCONUTS'] = self.coconutHistory
-        self.regressions['PINA_COLADAS'] = self.pinacoladaHistory
+        self.regressions['PINA_COLADAS'] = self.pearlHistory
+
+        # self.regressions['COCONUTS'] = []
+        # self.regressions['PINA_COLADAS'] = []
     
+    def calculate_spread(self):
+        coconuts = np.array(self.regressions['COCONUTS'][:500])
+        coladas = np.array(self.regressions['PINA_COLADAS'][:500])
+
+        ratio = pd.Series(coladas/coconuts)
+
+        ratios_mavg5 = ratio.rolling(window=5, center=False).mean()
+        ratios_mavg20 = ratio.rolling(window=20, center=False).mean()
+        std_20 = ratio.rolling(window=20, center=False).std()
+        zscore_20_5 = (ratios_mavg5 - ratios_mavg20)/std_20
+
+        buy = ratio.copy()
+        sell = ratio.copy()
+        buy[zscore_20_5>-1.25] = 0
+        sell[zscore_20_5<1.25] = 0
+        return buy.iloc[-1], sell.iloc[-1]
+
+
+
     def plotSpread(self):
-        coconuts = np.array(self.regressions['COCONUTS'][:-1])
+        coconuts = np.array(self.regressions['COCONUTS'][:500])
         coladas = np.array(self.regressions['PINA_COLADAS'][:-1])
         spread = np.subtract(coconuts, coladas)
 
@@ -68,15 +91,16 @@ class Trader:
         plt.ylabel('Ratio')
 
         plt.figure(figsize=(8, 6), dpi=100)
-        ratio[:500].plot()
-        buy = ratio[:500].copy()
-        sell = ratio[:500].copy()
+        ratio.plot()
+        buy = ratio.copy()
+        sell = ratio.copy()
         buy[zscore_20_5>-1.25] = 0
         sell[zscore_20_5<1.25] = 0
+
         buy.plot(color='g', linestyle='None', marker='^')
         sell.plot(color='r', linestyle='None', marker='^')
-        plt.plot(np.arange(0, len(coconuts1[:500])), coconuts1[:500], label='Coconuts')
-        plt.plot(np.arange(0, len(coladas1[:500])), coladas1[:500], label='Coladas')
+        plt.plot(np.arange(0, len(coconuts1)), coconuts1, label='Coconuts')
+        plt.plot(np.arange(0, len(coladas1)), coladas1, label='Coladas')
         x1, x2, y1, y2 = plt.axis()
         plt.axis((x1, x2, ratio.min(), ratio.max()))
         plt.legend(['Ratio', 'Buy Signal', 'Sell Signal', 'Coconuts', 'Coladas'])
@@ -118,25 +142,30 @@ class Trader:
             if max_vol <= 0:
                 break
         
-        if tradeHappened or not tradeHappened:
-            quantity = (self.limits[product]//int(self.limits[product]**0.5)) * 2
-            if trade_made == "BUY":
-                less = (max_vol+quantity-1)//quantity
-                for i in range(int(acceptable_price) - 2, int(acceptable_price) - 2 - less, -1):
-                    vol = quantity if max_vol >= quantity else max_vol
-                    print("BUY", str(-vol) + "x", i)
-                    order_lst.append(Order(product, i, vol))
-                    max_vol -= vol
-            elif trade_made == "SELL":
-                less = (max_vol+quantity-1)//quantity
-                for i in range(int(acceptable_price) + 2, int(acceptable_price) + 2 + less):
-                    vol = quantity if max_vol >= quantity else max_vol
-                    print("SELL", str(vol) + "x", i)
-                    order_lst.append(Order(product, i, -vol))
-                    max_vol -= vol
+        # if tradeHappened or not tradeHappened:
+        #     quantity = (self.limits[product]//int(self.limits[product]**0.5)) * 2
+        #     print(quantity)
+        #     print(acceptable_price)
+        #     if trade_made == "BUY":
+        #         less = (max_vol+quantity-1)//quantity
+        #         for i in range(int(acceptable_price) - 2, int(acceptable_price) - 2 - less, -1):
+        #             vol = quantity if max_vol >= quantity else max_vol
+        #             print("BUY", str(-vol) + "x", i)
+        #             order_lst.append(Order(product, i, vol))
+        #             max_vol -= vol
+        #     elif trade_made == "SELL":
+        #         less = (max_vol+quantity-1)//quantity
+        #         for i in range(int(acceptable_price) + 2, int(acceptable_price) + 2 + less):
+        #             vol = quantity if max_vol >= quantity else max_vol
+        #             print("SELL", str(vol) + "x", i)
+        #             order_lst.append(Order(product, i, -vol))
+        #             max_vol -= vol
 
+    def do_midpoint(self, sell_orders, buy_orders):
+        return (min(sell_orders) + max(buy_orders)) / 2
+    
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
-
+        WINDOW_SIZE = 20
         if not self.initalizedStart:
             self.initData()
 
@@ -147,17 +176,46 @@ class Trader:
             max_buy = limit - pos
             max_sell = abs(-limit - pos)
             order_depth: OrderDepth = state.order_depths[product]
+
             if product == "COCONUTS":
 
-                #
-                pass
+                product_pina = "PINA_COLADAS"
+                pina_pos = state.position.get(product_pina, 0)
+                pina_limit = self.limits[product_pina]
+                max_buy_pina = pina_limit- pina_pos
+                max_sell_pina= abs(-pina_limit- pina_pos)
+                
+
+                pina_orders: list[Order] = []
+                pina_order_depth: OrderDepth = state.order_depths[product_pina]
+
+                buy_ticker, sell_ticker = self.calculate_spread()
+                # append to regressions:
+                coconut_midpoint = self.do_midpoint(order_depth.sell_orders, order_depth.buy_orders)
+                colada_midpoint =  self.do_midpoint(pina_order_depth.sell_orders, pina_order_depth.buy_orders)
+                self.regressions[product].append(coconut_midpoint)
+                self.regressions[product_pina].append(colada_midpoint)
+
+
+                if state.timestamp/100 < WINDOW_SIZE:
+                   
+                    # need to figure out how many pina coladas to buy?
+                    if buy_ticker and not sell_ticker:
+
+                        print("BUYING BOTH")
+                        self.do_order(bot_orders = pina_order_depth.sell_orders, operator = operator.lt, max_vol = max_buy_pina * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+
+                        self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product, order_lst = orders)
+
+                    elif sell_ticker and not buy_ticker:
+                        print("SELLING BOTH")
+                        self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina * 0.5, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
+
+                        self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell * 0.5, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
 
             elif product != "PINA_COLADAS":
-                print(order_depth.buy_orders)
-                print(order_depth.sell_orders)
                 maxBid, minAsk = max(order_depth.buy_orders.keys()), min(order_depth.sell_orders.keys())
                 midpoint = (maxBid + minAsk)/2
-                print('midpoint', midpoint)
                 productVal = self.getProductValue(product, midpoint)
 
                 orders: list[Order] = []
@@ -168,9 +226,9 @@ class Trader:
 
                 result[product] = orders
 
-                print(f'{product} Bid Quantity: {len(order_depth.buy_orders)}')
-                print(f'{product} Ask Quantity: {len(order_depth.sell_orders)}')
-                print(f'{product} Mid Price: {midpoint}')
+                # print(f'{product} Bid Quantity: {len(order_depth.buy_orders)}')
+                # print(f'{product} Ask Quantity: {len(order_depth.sell_orders)}')
+                # print(f'{product} Mid Price: {midpoint}')
 
         return result
     
@@ -251,7 +309,7 @@ def main():
     trader1 = Trader()
     trader1.run(state)
 
-    trader1.plotSpread()
+    # trader1.plotSpread()
 
 
 
