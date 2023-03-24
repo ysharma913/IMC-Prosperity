@@ -143,29 +143,34 @@ class Trader:
         result = {}
         for product in state.order_depths.keys():
             pos = state.position.get(product, 0)
-            max_buy = 20 - pos
-            max_sell = abs(-20 - pos)
+            limit = self.limits[product]
+            max_buy = limit - pos
+            max_sell = abs(-limit - pos)
             order_depth: OrderDepth = state.order_depths[product]
+            if product == "COCONUTS":
 
-            print(order_depth.buy_orders)
-            print(order_depth.sell_orders)
-            maxBid, minAsk = max(order_depth.buy_orders.keys()), min(order_depth.sell_orders.keys())
-            midpoint = (maxBid + minAsk)/2
-            print('midpoint', midpoint)
-            productVal = self.getProductValue(product, midpoint)
+                #
+                pass
 
-            orders: list[Order] = []
+            elif product != "PINA_COLADAS":
+                print(order_depth.buy_orders)
+                print(order_depth.sell_orders)
+                maxBid, minAsk = max(order_depth.buy_orders.keys()), min(order_depth.sell_orders.keys())
+                midpoint = (maxBid + minAsk)/2
+                print('midpoint', midpoint)
+                productVal = self.getProductValue(product, midpoint)
 
-            self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= productVal, trade_made="BUY", product=product, order_lst = orders)
+                orders: list[Order] = []
 
-            self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= productVal, trade_made="SELL", product=product, order_lst = orders)
+                self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= productVal, trade_made="BUY", product=product, order_lst = orders)
 
-            result[product] = orders
+                self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= productVal, trade_made="SELL", product=product, order_lst = orders)
 
-            print(f'{product} Bid Quantity: {len(order_depth.buy_orders)}')
-            print(f'{product} Ask Quantity: {len(order_depth.sell_orders)}')
-            print(f'{product} Mid Price: {midpoint}')
-        
+                result[product] = orders
+
+                print(f'{product} Bid Quantity: {len(order_depth.buy_orders)}')
+                print(f'{product} Ask Quantity: {len(order_depth.sell_orders)}')
+                print(f'{product} Mid Price: {midpoint}')
 
         return result
     
