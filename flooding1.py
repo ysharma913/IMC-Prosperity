@@ -3,7 +3,7 @@ from datamodel import OrderDepth, TradingState, Order, Trade, Listing
 from collections import deque
 import operator
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import math, statistics
 import pandas as pd
 
@@ -95,7 +95,7 @@ class Trader:
         ratio.plot()
         buy = ratio.copy()
         sell = ratio.copy()
-        buy[zscore_20_5>-1] = 0
+        buy[zscore_20_5>-1.25] = 0
         sell[zscore_20_5<1] = 0
         # print(zscore_20_5)
         # print(buy)
@@ -124,26 +124,25 @@ class Trader:
         tradeHappened = False
         orders_sorted = sorted(bot_orders.keys(), reverse = reverse)
         for prices in orders_sorted:
-            if operator(prices, acceptable_price):
-                volume = abs(bot_orders[prices])
-                vol_to_trade = min(volume, max_vol)
-                if vol_to_trade <= 0:
-                    break
-                max_vol -= vol_to_trade
-                # In case the lowest ask is lower than our fair value,
-                # This presents an opportunity for us to buy cheaply
-                # The code below therefore sends a BUY order at the price level of the ask,
-                # with the same quantity
-                # We expect this order to trade with the sell order
-                tradeHappened = True
-                print(trade_made, str(vol_to_trade) + "x", prices)
-                if trade_made == "BUY":
-                    order_lst.append(Order(product, prices, vol_to_trade))
-                 
-                elif trade_made == "SELL":
-                    order_lst.append(Order(product, prices, -vol_to_trade))
-            else: 
+            # if operator(prices, acceptable_price):
+            volume = abs(bot_orders[prices])
+            vol_to_trade = min(volume, max_vol)
+            if vol_to_trade <= 0:
                 break
+            max_vol -= vol_to_trade
+            # In case the lowest ask is lower than our fair value,
+            # This presents an opportunity for us to buy cheaply
+            # The code below therefore sends a BUY order at the price level of the ask,
+            # with the same quantity
+            # We expect this order to trade with the sell order
+            tradeHappened = True
+            print(trade_made, str(vol_to_trade) + "x", prices)
+            if trade_made == "BUY":
+                order_lst.append(Order(product, prices, vol_to_trade))
+
+            elif trade_made == "SELL":
+                order_lst.append(Order(product, prices, -vol_to_trade))
+
             if max_vol <= 0:
                 break
         
@@ -170,10 +169,13 @@ class Trader:
         return (min(sell_orders) + max(buy_orders)) / 2
     
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
-        WINDOW_SIZE = 20
+
+        # 500, z_thresh = 1.25
+        WINDOW_SIZE = 500
         if not self.initalizedStart:
             self.initData()
-
+        
+        z_thresh = 1.1
         result = {}
         for product in state.order_depths.keys():
             pos = state.position.get(product, 0)
@@ -182,6 +184,7 @@ class Trader:
             max_sell = abs(-limit - pos)
             order_depth: OrderDepth = state.order_depths[product]
             orders: list[Order] = []
+
             if product == "COCONUTS":
 
                 product_pina = "PINA_COLADAS"
@@ -209,20 +212,20 @@ class Trader:
               
                     # need to figure out how many pina coladas to buy?
                     print("z-score", z_score)
-                    if z_score > 1:
+                    if z_score > z_thresh:
                         print("BUYING BOTH")
-                        # self.do_order(bot_orders = pina_order_depth.sell_orders, operator = operator.lt, max_vol = max_buy_pina * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+                        self.do_order(bot_orders = pina_order_depth.sell_orders, operator = operator.lt, max_vol = max_buy_pina, acceptable_price= 1000000, trade_made="BUY", product=product_pina, order_lst = pina_orders)
 
-                        # self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy * 0.5, acceptable_price= 1000000, trade_made="BUY", product=product, order_lst = orders)
+                        self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= 1000000, trade_made="BUY", product=product, order_lst = orders)
 
-                    elif z_score < -1:
+                    elif z_score < -z_thresh:
                         print("SELLING BOTH")
-                        # self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina * 0.5, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
+                        self.do_order(bot_orders = pina_order_depth.buy_orders, operator = operator.gt, max_vol = max_sell_pina, acceptable_price= 0, trade_made="SELL", product=product_pina, order_lst = pina_orders)
 
-                        # self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell * 0.5, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
+                        self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= 0, trade_made="SELL", product=product, order_lst = orders)
                 
-                # result[product] = orders
-                # result[product_pina] = pina_orders
+                result[product] = orders
+                result[product_pina] = pina_orders
 
             # elif product != "PINA_COLADAS":
             #     maxBid, minAsk = max(order_depth.buy_orders.keys()), min(order_depth.sell_orders.keys())
