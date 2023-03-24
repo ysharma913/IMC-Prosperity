@@ -7,15 +7,21 @@ import numpy as np
 class Trader:
 
     current_iter = 0
-    cache = deque(())
+    cache = list()
+
+    # past_averages
+
 
     window_size = 5
+    z_window_size = 5
+
+    def z_score(self, x: float):
+        last_window = np.array(self.cache[-self.z_window_size - 1: -1])
+
+        return (x - last_window.mean())/last_window.std()
 
     def rolling_mean(self):
-        x,y = zip(*self.cache)
-        x,y = np.array(x), np.array(y)
-
-        return y.mean()
+      return np.array(self.cache[-self.z_window_size - 1:-1]).mean()
 
     def _best_fit_line(self, pairs: pd.DataFrame = None):
 
@@ -75,21 +81,8 @@ class Trader:
                 break
                     
         if not tradeHappened:
-            if trade_made == "BUY":
-                less = (max_vol+5)//6
-                for i in range(int(acceptable_price) - 2, int(acceptable_price) - 2 - less - 1, -1):
-                    vol = 10 if max_vol >= 10 else max_vol
-                    print("BUY", str(-vol) + "x", i)
-                    order_lst.append(Order(product, i, vol))
-                    max_vol -= vol
-            elif trade_made == "SELL":
-                less = (max_vol+5)//6
-                for i in range(int(acceptable_price) + 2, int(acceptable_price) + 2 + less):
-                    vol = 10 if max_vol >= 10 else max_vol
-                    print("SELL", str(vol) + "x", i)
-                    order_lst.append(Order(product, i, -vol))
-                    max_vol -= vol
-            return None
+          self.marketmake(product=product, tradeMade=trade_made, quantity=10, acceptablePrice=acceptable_price, volume=max_vol, orderList=order_lst)
+          return None
 
         else:
             return all_prices
@@ -112,6 +105,26 @@ class Trader:
         ret[product] = ((min_ask + max_buy)/2, max_buy, min_ask)
 
       return ret
+    
+
+    def marketmake(self, product, tradeMade, quantity, acceptablePrice, volume, orderList):
+        
+        if tradeMade == "BUY":
+            less = (volume+quantity-1)//quantity
+            for i in range(int(acceptablePrice) - 2, int(acceptablePrice) - 2 - less, -1):
+                vol = quantity if volume >= quantity else volume
+                print("BUY", str(-vol) + "x", i)
+                orderList.append(Order(product, i, vol))
+                volume -= vol
+        elif tradeMade == "SELL":
+            less = (volume+quantity-1)//quantity
+            for i in range(int(acceptablePrice) + 2, int(acceptablePrice) + 2 + less):
+                vol = quantity if volume >= quantity else volume
+                print("SELL", str(vol) + "x", i)
+                orderList.append(Order(product, i, -vol))
+                volume -= vol
+        else:
+            return None
       
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
         """
@@ -136,9 +149,7 @@ class Trader:
                 expected_val_tup = expected_val_dict[product]
                 expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
 
-                if len(self.cache) == Trader.window_size:
-                  self.cache.popleft()
-                self.cache.append((state.timestamp, expected_val_total))
+                self.cache.append(expected_val_total)
 
                 # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
                 order_depth: OrderDepth = state.order_depths[product]
@@ -148,56 +159,60 @@ class Trader:
 
                 ## patel calls function gets model
 
-                # model = self._best_fit_line(self.cache)
+                # model = self._best_fit_line(self.cache
+
                 
-                middle = self.rolling_mean()
-
-                FACTOR = 1
-
                 buy_prices = None
                 sell_prices = None
-                if len(self.cache) == Trader.window_size:
-                  if expected_val_total + FACTOR < middle:
-                      buy_prices = self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - FACTOR + 1, trade_made="BUY", product=product, order_lst = orders)
-                  # self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle, trade_made="BUY", product=product, order_lst = orders)
-                  elif expected_val_total - FACTOR > middle:
-                      sell_prices = self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + FACTOR - 1, trade_made="SELL", product=product, order_lst = orders)
+                middle = -1
+                if len(self.cache) >= Trader.window_size:
+                  z_score = self.z_score(expected_val_total)
+                  z_thresh = 1.5
+                  middle = self.rolling_mean()
 
+                  if z_score < -z_thresh :
+                      buy_prices = self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - 1, trade_made="BUY", product=product, order_lst = orders)
+                  # self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle, trade_made="BUY", product=product, order_lst = orders)
+                  elif z_score > z_thresh:
+                      sell_prices = self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + 1, trade_made="SELL", product=product, order_lst = orders)
+                  else:
+                    self.marketmake(product=product, tradeMade="BUY", quantity=10, acceptablePrice=middle, volume=max_buy, orderList=orders)
+                    self.marketmake(product=product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
                   # else:
                   #      self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - FACTOR, trade_made="BUY", product=product, order_lst = orders)
                   #      self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + FACTOR, trade_made="SELL", product=product, order_lst = orders)
 
 
 
-                result[product] = orders
+                  result[product] = orders
 
-                print_str = ['\nFOR_PLOT']
+                  print_str = ['\nFOR_PLOT']
 
-                print_str.append('TIMESTAMP')
-                print_str.append(str(state.timestamp))
+                  print_str.append('TIMESTAMP')
+                  print_str.append(str(state.timestamp))
 
-                print_str.append('TRUE_MID')
-                print_str.append(str(expected_val_total))
+                  print_str.append('TRUE_MID')
+                  print_str.append(str(expected_val_total))
 
-                print_str.append('MAX_BUY')
-                print_str.append(str(expected_val_buy))
+                  print_str.append('MAX_BUY')
+                  print_str.append(str(expected_val_buy))
 
-                print_str.append('MIN_ASK')
-                print_str.append(str(expected_val_sell))
+                  print_str.append('MIN_ASK')
+                  print_str.append(str(expected_val_sell))
 
-                print_str.append('PRED_MIDDLE')
-                print_str.append(str(middle))
+                  print_str.append('PRED_MIDDLE')
+                  print_str.append(str(middle))
 
 
 
-                print_str.append('BUY_PRICES')
-                print_str.append(str(buy_prices[0] if buy_prices != None else None))
+                  print_str.append('BUY_PRICES')
+                  print_str.append(str(buy_prices[0] if buy_prices != None else None))
 
-                print_str.append('SELL_PRICES')
-                print_str.append(str(sell_prices[0] if sell_prices != None else None))
+                  print_str.append('SELL_PRICES')
+                  print_str.append(str(sell_prices[0] if sell_prices != None else None))
 
-                print_str = ':'.join(print_str)
-                print(print_str)
+                  print_str = ':'.join(print_str)
+                  print(print_str)
 
 
                 import itertools

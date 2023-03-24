@@ -62,12 +62,12 @@ def plot(log_file):
 
   
 
-  # plt.plot(times, max_buys, linestyle = 'dashed', linewidth=1, zorder = -1)
-  # plt.plot(times, min_asks, linestyle = 'dashed', linewidth=1, zorder = -1)
+  plt.plot(times, max_buys, linestyle = 'dashed', linewidth=1, zorder = -1)
+  plt.plot(times, min_asks, linestyle = 'dashed', linewidth=1, zorder = -1)
   plt.plot(times, pred_mids, linestyle = 'dashed', linewidth=1, zorder = -1)
   plt.plot(times, true_mids, linestyle = 'dashed', linewidth=1, zorder = -1)
 
-  plt.scatter(buy_times, buy_prices, c = 'black', s = 20, zorder = 1)
+  plt.scatter(buy_times, buy_prices, c = 'magenta', s = 20, zorder = 1)
   plt.scatter(sell_times, sell_prices, c = 'black', s = 20, zorder = 1)
 
   
