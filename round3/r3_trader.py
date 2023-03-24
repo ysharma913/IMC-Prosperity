@@ -7,6 +7,16 @@ import math, statistics
 import pandas as pd
 
 
+class MeanReversion:
+
+  def __init__(self, window_size: int, z_thresh: int):
+      self.cache = list()
+      self.WINDOW_SIZE = window_size
+      self.Z_THRESH = z_thresh
+
+
+  def make_orders(self, state, product):
+
 
 class Trader:
 
