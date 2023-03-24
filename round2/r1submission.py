@@ -43,6 +43,24 @@ class Trader:
           elif trade.seller != '':
               self.all_buys[symbol].remove(min(self.all_buys[symbol]))
 
+    def marketmake(self, product, tradeMade, quantity, acceptablePrice, volume, orderList):
+        if tradeMade == "BUY":
+            less = (volume+quantity-1)//quantity
+            for i in range(int(acceptablePrice) - 2, int(acceptablePrice) - 2 - less, -1):
+                vol = 10 if volume >= 10 else volume
+                print("BUY", str(-vol) + "x", i)
+                orderList.append(Order(product, i, vol))
+                volume -= vol
+        elif tradeMade == "SELL":
+            less = (volume+quantity-1)//quantity
+            for i in range(int(acceptablePrice) + 2, int(acceptablePrice) + 2 + less):
+                vol = 10 if volume >= 10 else volume
+                print("SELL", str(vol) + "x", i)
+                orderList.append(Order(product, i, -vol))
+                volume -= vol
+        else:
+            return None
+
     def do_order(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
         reverse = False
         if trade_made == "SELL":
@@ -75,21 +93,22 @@ class Trader:
                 break
                     
         if not tradeHappened:
-            if trade_made == "BUY":
-                less = (max_vol+5)//6
-                for i in range(int(acceptable_price) - 2, int(acceptable_price) - 2 - less - 1, -1):
-                    vol = 10 if max_vol >= 10 else max_vol
-                    print("BUY", str(-vol) + "x", i)
-                    order_lst.append(Order(product, i, vol))
-                    max_vol -= vol
-            elif trade_made == "SELL":
-                less = (max_vol+5)//6
-                for i in range(int(acceptable_price) + 2, int(acceptable_price) + 2 + less):
-                    vol = 10 if max_vol >= 10 else max_vol
-                    print("SELL", str(vol) + "x", i)
-                    order_lst.append(Order(product, i, -vol))
-                    max_vol -= vol
-            return None
+            self.marketmake(product=product, tradeMade=trade_made, quantity=10, acceptablePrice=acceptable_price, volume=max_vol, orderList=order_lst)
+            # if trade_made == "BUY":
+            #     less = (max_vol+5)//6
+            #     for i in range(int(acceptable_price) - 2, int(acceptable_price) - 2 - less - 1, -1):
+            #         vol = 10 if max_vol >= 10 else max_vol
+            #         print("BUY", str(-vol) + "x", i)
+            #         order_lst.append(Order(product, i, vol))
+            #         max_vol -= vol
+            # elif trade_made == "SELL":
+            #     less = (max_vol+5)//6
+            #     for i in range(int(acceptable_price) + 2, int(acceptable_price) + 2 + less):
+            #         vol = 10 if max_vol >= 10 else max_vol
+            #         print("SELL", str(vol) + "x", i)
+            #         order_lst.append(Order(product, i, -vol))
+            #         max_vol -= vol
+            # return None
 
         else:
             return all_prices
@@ -162,6 +181,9 @@ class Trader:
                   # self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle, trade_made="BUY", product=product, order_lst = orders)
                   elif expected_val_total - FACTOR > middle:
                       sell_prices = self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + FACTOR - 1, trade_made="SELL", product=product, order_lst = orders)
+                  else:
+                      self.marketmake(product=product, tradeMade="BUY", quantity=10, acceptablePrice=middle, volume=max_buy, orderList=orders)
+                      self.marketmake(product=product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
 
                   # else:
                   #      self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - FACTOR, trade_made="BUY", product=product, order_lst = orders)
