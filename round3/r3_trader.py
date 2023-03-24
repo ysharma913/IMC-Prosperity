@@ -6,143 +6,12 @@ import numpy as np
 import math, statistics
 import pandas as pd
 
+# all the static trader functions
+class StaticTrader:
 
-class MeanReversion:
-
-  def __init__(self, window_size: int, z_thresh: int):
-      self.cache = list()
-      self.WINDOW_SIZE = window_size
-      self.Z_THRESH = z_thresh
-
-
-  def rolling_mean(self):
-      return np.array(self.cache[-self.z_window_size - 1:-1]).mean()
-
-
-  def make_orders(self, state, product):
-
-    expected_val_tup = expected_val_dict[product]
-    expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
-
-    self.cache.append(expected_val_total)
-
-    # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
-    order_depth: OrderDepth = state.order_depths[product]
-    
-    # Initialize the list of Orders to be sent as an empty list
-    orders: list[Order] = []
-
-    
-    buy_prices = None
-    sell_prices = None
-    middle = -1
-    if len(self.cache) >= Trader.window_size:
-      z_score = self.z_score(expected_val_total)
-      z_thresh = 1.5
-      middle = self.rolling_mean()
-
-      if z_score < -z_thresh :
-          buy_prices = self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - 1, trade_made="BUY", product=product, order_lst = orders)
-      elif z_score > z_thresh:
-          sell_prices = self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + 1, trade_made="SELL", product=product, order_lst = orders)
-      else:
-        self.marketmake(product=product, tradeMade="BUY", quantity=10, acceptablePrice=middle, volume=max_buy, orderList=orders)
-        self.marketmake(product=product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
-
-
-
-    result[product] = orders
-
-
-
-class Trader:
-
-    cache = list()
-
-    # past_averages
-
-
-    window_size = 5
-    z_window_size = 5
-
-    initalizedStart = False
     limits = {'PEARLS': 20, 'BANANAS': 20, 'COCONUTS': 600, 'PINA_COLADAS': 300}
-    regressions = {}
-    last_ticker = 0
 
-    def initData(self):
-        self.initalizedStart = True
-        self.regressions['PEARLS'] = []
-        self.regressions['BANANAS'] = []
-
-        self.regressions['COCONUTS'] = []
-        self.regressions['PINA_COLADAS'] = []
-    
-    def calculate_spread(self):
-        coconuts = np.array(self.regressions['COCONUTS'])
-        coladas = np.array(self.regressions['PINA_COLADAS'])
-
-        ratio = pd.Series(coladas/coconuts)
-
-        ratios_mavg5 = ratio.rolling(window=5, center=False).mean()
-        ratios_mavg20 = ratio.rolling(window=20, center=False).mean()
-        std_20 = ratio.rolling(window=20, center=False).std()
-        zscore_20_5 = (ratios_mavg5 - ratios_mavg20)/std_20
-
-        return zscore_20_5.iloc[-1]
-    
-    def z_score(self, x: float):
-        last_window = np.array(self.cache[-self.z_window_size - 1: -1])
-
-        return (x - last_window.mean())/last_window.std()
-
-    def rolling_mean(self):
-      return np.array(self.cache[-self.z_window_size - 1:-1]).mean()
-
-    def _best_fit_line(self, pairs: pd.DataFrame = None):
-
-        x,y = zip(*pairs)
-        x,y = np.array(x), np.array(y)
-
-        # assert len(pairs) == 2763
-        return np.poly1d(np.polyfit(x, y, 1))
-
-
-    def _get_expected_total(self, orders: Dict[int, int]) -> Tuple[int]:
-        expected_val = 0
-        total = 0
-
-        for price in orders.keys():
-            expected_val += price * abs(orders[price])
-            total += abs(orders[price])
-
-        return expected_val, total
-    
-    def _append_buys(self, symbol: Symbol, own_trades: List[Trade]):
-      for trade in own_trades:
-          if trade.buyer != '':
-              self.all_buys[symbol].append(trade.price)
-          elif trade.seller != '':
-              self.all_buys[symbol].remove(min(self.all_buys[symbol]))
-
-    def get_expected_price(self, state: TradingState) -> Dict[str, float]:
-
-      ret: Dict[str, float] = {}
-      for product in state.order_depths.keys():              
-        expected_val = 0
-        total = 0
-
-        buy_orders = state.order_depths[product].buy_orders
-        sell_orders = state.order_depths[product].sell_orders
-
-        max_buy = max(buy_orders.keys())
-        min_ask = min(sell_orders.keys())
-                
-        ret[product] = ((min_ask + max_buy)/2, max_buy, min_ask)
-
-      return ret
-
-    def marketmake(self, product, tradeMade, quantity, acceptablePrice, volume, orderList):
+    def marketmake(product, tradeMade, quantity, acceptablePrice, volume, orderList):
         if tradeMade == "BUY":
             less = (volume+quantity-1)//quantity
             for i in range(int(acceptablePrice) - 2, int(acceptablePrice) - 2 - less, -1):
@@ -159,13 +28,24 @@ class Trader:
                 volume -= vol
         else:
             return None
-
-    def getProductValue(self, product, currPrice):
-        self.regressions[product] = self.regressions[product][1:] + [currPrice]
-        model = np.poly1d(np.polyfit(np.arange(1, len(self.regressions[product])+1), np.array(self.regressions[product]), 1))
-        return model(len(self.regressions[product]))
     
-    def do_order(self, bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst):
+    def get_product_expected_price(state, product):
+        buy_orders = state.order_depths[product].buy_orders
+        sell_orders = state.order_depths[product].sell_orders
+
+        max_buy = max(buy_orders.keys())
+        min_ask = min(sell_orders.keys())
+                
+        return ((min_ask + max_buy)/2, max_buy, min_ask)
+
+    def get_max_min_vols(state, product):
+        pos = state.position.get(product, 0)
+        limit = StaticTrader.limits[product]
+        max_buy = limit - pos
+        max_sell = abs(-limit - pos)
+        return max_buy, max_sell
+    
+    def do_order_price(bot_orders, operator, max_vol, acceptable_price, trade_made, product, order_lst, limit):
         reverse = False
         if trade_made == "SELL":
             reverse = True
@@ -197,13 +77,13 @@ class Trader:
                 break
                     
         if not tradeHappened:
-          self.marketmake(product=product, tradeMade=trade_made, quantity=self.limits[product]//2, acceptablePrice=acceptable_price, volume=max_vol, orderList=order_lst)
+          StaticTrader.marketmake(product=product, tradeMade=trade_made, quantity=limit//2, acceptablePrice=acceptable_price, volume=max_vol, orderList=order_lst)
           return None
 
         else:
             return all_prices
 
-    def do_order_volume(self, bot_orders, max_vol, trade_made, product, order_lst):
+    def do_order_volume(bot_orders, max_vol, trade_made, product, order_lst):
         reverse = False
         if trade_made == "SELL":
             reverse = True
@@ -232,8 +112,165 @@ class Trader:
             if max_vol <= 0:
                 break
 
-    def do_midpoint(self, sell_orders, buy_orders):
+    def do_midpoint(sell_orders, buy_orders):
         return (min(sell_orders) + max(buy_orders)) / 2
+
+class MeanReversion:
+
+        def __init__(self, window_size: int, z_thresh: int, product : str):
+            self.rolling_window = list()
+            self.WINDOW_SIZE = window_size
+            self.Z_THRESH = z_thresh
+            self.product = product
+            self.limit = StaticTrader.limits[product]
+
+        # 
+        def rolling_mean(self):
+            return np.array(self.rolling_window[-self.WINDOW_SIZE - 1:-1]).mean()
+        
+        
+        def z_score(self, x: float):
+            last_window = np.array(self.rolling_window[-self.WINDOW_SIZE - 1: -1])
+
+            return (x - last_window.mean())/last_window.std()
+
+
+        # - return the list of orders, 
+        def make_orders(self, state):
+            
+            print("MAKE ORDER")
+
+            expected_val_tup = StaticTrader.get_product_expected_price(state, self.product)
+
+            expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
+            self.rolling_window.append(expected_val_total)
+
+            # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+            order_depth: OrderDepth = state.order_depths[self.product]
+            
+            # Initialize the list of Orders to be sent as an empty list
+            orders: list[Order] = []
+
+            max_buy, max_sell = StaticTrader.get_max_min_vols(state, self.product)
+
+            buy_prices = None
+            sell_prices = None
+            middle = -1
+            print("ABOUT TO DO  MATH??")
+            print("length of rolling window: ", str(len(self.rolling_window)))
+            print("self window size: ", self.WINDOW_SIZE)
+
+            if len(self.rolling_window) >= self.WINDOW_SIZE:
+                z_score = self.z_score(expected_val_total)
+                middle = self.rolling_mean()
+                print("z_score: ", z_score)
+
+                print("z_thresh: ", self.Z_THRESH)
+                print("middle: ", middle)
+                if z_score < -self.Z_THRESH:
+                    buy_prices = StaticTrader.do_order_price(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - 1, trade_made="BUY", product=self.product, order_lst = orders, limit = self.limit)
+
+                elif z_score > self.Z_THRESH:
+                    sell_prices = StaticTrader.do_order_price(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + 1, trade_made="SELL", product=self.product, order_lst = orders, limit = self.limit)
+
+                else:
+                    StaticTrader.marketmake(product=self.product, tradeMade="BUY", quantity=10, acceptablePrice=middle, volume=max_buy, orderList=orders)
+
+                    StaticTrader.marketmake(product=self.product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
+
+            return orders
+        
+class Trader:
+
+    wrappers = {
+        "PEARLS": [],
+        "BANANAS": [MeanReversion(window_size = 5, z_thresh = 1.5, product = "BANANAS")],
+        "COCONUTS": [],
+        "PINA_COLADAS": [],
+        "BERRIES": [],
+        "DIVING_GEAR": []
+
+    }
+    # past_averages
+
+    initalizedStart = False
+    regressions = {}
+    last_ticker = 0
+
+    def initData(self):
+        self.initalizedStart = True
+        self.regressions['PEARLS'] = []
+        self.regressions['BANANAS'] = []
+
+        self.regressions['COCONUTS'] = []
+        self.regressions['PINA_COLADAS'] = []
+    
+    def calculate_spread(self):
+        coconuts = np.array(self.regressions['COCONUTS'])
+        coladas = np.array(self.regressions['PINA_COLADAS'])
+
+        ratio = pd.Series(coladas/coconuts)
+
+        ratios_mavg5 = ratio.rolling(window=5, center=False).mean()
+        ratios_mavg20 = ratio.rolling(window=20, center=False).mean()
+        std_20 = ratio.rolling(window=20, center=False).std()
+        zscore_20_5 = (ratios_mavg5 - ratios_mavg20)/std_20
+
+        return zscore_20_5.iloc[-1]
+    
+ 
+    def rolling_mean(self):
+      return np.array(self.cache[-self.z_window_size - 1:-1]).mean()
+    
+
+    def _best_fit_line(self, pairs: pd.DataFrame = None):
+
+        x,y = zip(*pairs)
+        x,y = np.array(x), np.array(y)
+
+        # assert len(pairs) == 2763
+        return np.poly1d(np.polyfit(x, y, 1))
+
+
+    def _get_expected_total(self, orders: Dict[int, int]) -> Tuple[int]:
+        expected_val = 0
+        total = 0
+
+        for price in orders.keys():
+            expected_val += price * abs(orders[price])
+            total += abs(orders[price])
+
+        return expected_val, total
+    
+    def _append_buys(self, symbol: Symbol, own_trades: List[Trade]):
+      for trade in own_trades:
+          if trade.buyer != '':
+              self.all_buys[symbol].append(trade.price)
+          elif trade.seller != '':
+              self.all_buys[symbol].remove(min(self.all_buys[symbol]))
+
+    
+
+    def getProductValue(self, product, currPrice):
+        self.regressions[product] = self.regressions[product][1:] + [currPrice]
+        model = np.poly1d(np.polyfit(np.arange(1, len(self.regressions[product])+1), np.array(self.regressions[product]), 1))
+        return model(len(self.regressions[product]))
+    
+    
+    def get_expected_price(self, state: TradingState) -> Dict[str, float]:
+
+        ret: Dict[str, float] = {}
+        for product in state.order_depths.keys():              
+
+            buy_orders = state.order_depths[product].buy_orders
+            sell_orders = state.order_depths[product].sell_orders
+
+            max_buy = max(buy_orders.keys())
+            min_ask = min(sell_orders.keys())
+                    
+            ret[product] = ((min_ask + max_buy)/2, max_buy, min_ask)
+
+        return ret    
     
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
 
@@ -242,182 +279,191 @@ class Trader:
         if not self.initalizedStart:
             self.initData()
         
-        expected_val_dict = self.get_expected_price(state)
-        print(len(self.cache))
-        day = state.timestamp
+        # expected_val_dict = self.get_expected_price(state)
+        # print(len(self.cache)
         
         result = {}
         for product in state.order_depths.keys():
-            pos = state.position.get(product, 0)
-            limit = self.limits[product]
-            max_buy = limit - pos
-            max_sell = abs(-limit - pos)
-            order_depth: OrderDepth = state.order_depths[product]
-            orders: list[Order] = []
+            # pos = state.position.get(product, 0)
+            # limit = self.limits[product]
+            # max_buy = limit - pos
+            # max_sell = abs(-limit - pos)
+            # order_depth: OrderDepth = state.order_depths[product]
+            # orders: list[Order] = []
 
-            if product == 'PEARLS':
-                acceptable_price = 10000
+            # if product == 'PEARLS':
+            #     acceptable_price = 10000
 
-                # If statement checks if there are any SELL orders in the PEARLS market
-                hadBOrder = False
-                sell_keys_lst = sorted(order_depth.sell_orders.keys())
-                for best_ask in sell_keys_lst:
+            #     # If statement checks if there are any SELL orders in the PEARLS market
+            #     hadBOrder = False
+            #     sell_keys_lst = sorted(order_depth.sell_orders.keys())
+            #     for best_ask in sell_keys_lst:
 
-                    # Sort all the available sell orders by their price,
-                    # and select only the sell order with the lowest price
-                    #best_ask = min(order_depth.sell_orders.keys())
+            #         # Sort all the available sell orders by their price,
+            #         # and select only the sell order with the lowest price
+            #         #best_ask = min(order_depth.sell_orders.keys())
                 
-                    # Check if the lowest ask (sell order) is lower than the above defined fair value
-                    if best_ask < acceptable_price:
-                        best_ask_volume = abs(order_depth.sell_orders[best_ask])
-                        vol_to_trade = min(best_ask_volume, max_buy)
-                        max_buy -= vol_to_trade
-                        # In case the lowest ask is lower than our fair value,
-                        # This presents an opportunity for us to buy cheaply
-                        # The code below therefore sends a BUY order at the price level of the ask,
-                        # with the same quantity
-                        # We expect this order to trade with the sell order
-                        print("BUY", str(-best_ask_volume) + "x", best_ask, end = "|")
-                        orders.append(Order(product, best_ask, best_ask_volume))
-                        hadBOrder = True
-                    else: 
-                        break
-                    if max_buy <= 0:
-                        break
+            #         # Check if the lowest ask (sell order) is lower than the above defined fair value
+            #         if best_ask < acceptable_price:
+            #             best_ask_volume = abs(order_depth.sell_orders[best_ask])
+            #             vol_to_trade = min(best_ask_volume, max_buy)
+            #             max_buy -= vol_to_trade
+            #             # In case the lowest ask is lower than our fair value,
+            #             # This presents an opportunity for us to buy cheaply
+            #             # The code below therefore sends a BUY order at the price level of the ask,
+            #             # with the same quantity
+            #             # We expect this order to trade with the sell order
+            #             print("BUY", str(-best_ask_volume) + "x", best_ask, end = "|")
+            #             orders.append(Order(product, best_ask, best_ask_volume))
+            #             hadBOrder = True
+            #         else: 
+            #             break
+            #         if max_buy <= 0:
+            #             break
                 
-                if max_buy > 0 and not hadBOrder:
-                    less = (max_buy+9)//10
-                    for i in range(10000 - 3, 10000 - 3 - less - 1, -1):
-                        vol = 10 if max_buy >= 10 else max_buy
-                        print("BUY", str(-vol) + "x", i, end = "|")
-                        orders.append(Order(product, i, vol))
-                        max_buy -= vol
+            #     if max_buy > 0 and not hadBOrder:
+            #         less = (max_buy+9)//10
+            #         for i in range(10000 - 3, 10000 - 3 - less - 1, -1):
+            #             vol = 10 if max_buy >= 10 else max_buy
+            #             print("BUY", str(-vol) + "x", i, end = "|")
+            #             orders.append(Order(product, i, vol))
+            #             max_buy -= vol
 
-                # The below code block is similar to the one above,
-                # the difference is that it finds the highest bid (buy order)
-                # If the price of the order is higher than the fair value
-                # This is an opportunity to sell at a premium   
-                hadSOrder = False
-                buy_keys_lst = sorted(order_depth.buy_orders.keys(), reverse = True)
-                for best_bid in buy_keys_lst:
+            #     # The below code block is similar to the one above,
+            #     # the difference is that it finds the highest bid (buy order)
+            #     # If the price of the order is higher than the fair value
+            #     # This is an opportunity to sell at a premium   
+            #     hadSOrder = False
+            #     buy_keys_lst = sorted(order_depth.buy_orders.keys(), reverse = True)
+            #     for best_bid in buy_keys_lst:
 
-                    # best_bid = max(order_depth.buy_orders.keys())
+            #         # best_bid = max(order_depth.buy_orders.keys())
 
-                    if best_bid > acceptable_price:
-                        best_bid_volume = order_depth.buy_orders[best_bid]
-                        vol_to_trade = min(best_bid_volume, max_sell)
-                        max_sell -= vol_to_trade
-                        print("SELL", str(vol_to_trade) + "x", best_bid, end= "|")
-                        orders.append(Order(product, best_bid, -vol_to_trade))
-                        hadSOrder = True
-                    else:
-                        break
-                    if max_sell <= 0:
-                        break
+            #         if best_bid > acceptable_price:
+            #             best_bid_volume = order_depth.buy_orders[best_bid]
+            #             vol_to_trade = min(best_bid_volume, max_sell)
+            #             max_sell -= vol_to_trade
+            #             print("SELL", str(vol_to_trade) + "x", best_bid, end= "|")
+            #             orders.append(Order(product, best_bid, -vol_to_trade))
+            #             hadSOrder = True
+            #         else:
+            #             break
+            #         if max_sell <= 0:
+            #             break
                 
-                if max_sell > 0 and not hadSOrder:
-                    less = (max_sell+9)//10
-                    for i in range(10000 + 3, 10000 + 3 + less):
-                        vol = 10 if max_sell >= 10 else max_sell
-                        print("SELL", str(vol) + "x", i, end= "|")
-                        orders.append(Order(product, i, -vol))
-                        max_sell -= vol
-                # Add all the above orders to the result dict
-                result[product] = orders
-                print()
-            if product == "BANANAS":
-                expected_val_tup = expected_val_dict[product]
-                expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
-
-                self.cache.append(expected_val_total)
-
-                # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
-                order_depth: OrderDepth = state.order_depths[product]
-                
-                # Initialize the list of Orders to be sent as an empty list
-                orders: list[Order] = []
-
-                
-                buy_prices = None
-                sell_prices = None
-                middle = -1
-                if len(self.cache) >= Trader.window_size:
-                  z_score = self.z_score(expected_val_total)
-                  z_thresh = 1.5
-                  middle = self.rolling_mean()
-
-                  if z_score < -z_thresh :
-                      buy_prices = self.do_order(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - 1, trade_made="BUY", product=product, order_lst = orders)
-                  elif z_score > z_thresh:
-                      sell_prices = self.do_order(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + 1, trade_made="SELL", product=product, order_lst = orders)
-                  else:
-                    self.marketmake(product=product, tradeMade="BUY", quantity=10, acceptablePrice=middle, volume=max_buy, orderList=orders)
-                    self.marketmake(product=product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
-
-
-
-                result[product] = orders
-
-
-            if product == "COCONUTS":
-
-                product_pina = "PINA_COLADAS"
-                pina_pos = state.position.get(product_pina, 0)
-                pina_limit = self.limits[product_pina]
-                max_buy_pina = pina_limit- pina_pos
-                max_sell_pina= abs(-pina_limit- pina_pos)
-                
-
-                pina_orders: list[Order] = []
-                pina_order_depth: OrderDepth = state.order_depths[product_pina]
-
-
-                # append to regressions:
-                coconut_midpoint = self.do_midpoint(order_depth.sell_orders, order_depth.buy_orders)
-                colada_midpoint =  self.do_midpoint(pina_order_depth.sell_orders, pina_order_depth.buy_orders)
-                self.regressions[product].append(coconut_midpoint)
-                self.regressions[product_pina].append(colada_midpoint)
-
-                z_score = self.calculate_spread()
-
-                # print("Timestamp", state.timestamp)
-
-                if state.timestamp/100 >= WINDOW_SIZE:
+            #     if max_sell > 0 and not hadSOrder:
+            #         less = (max_sell+9)//10
+            #         for i in range(10000 + 3, 10000 + 3 + less):
+            #             vol = 10 if max_sell >= 10 else max_sell
+            #             print("SELL", str(vol) + "x", i, end= "|")
+            #             orders.append(Order(product, i, -vol))
+            #             max_sell -= vol
+            #     # Add all the above orders to the result dict
+            #     result[product] = orders
+            #     print()
+            # precedent_lst = []
+            # if product == "BANANAS":
+            #     precedent_lst = []
+            precedent_lst = self.wrappers[product]
+            for algo in precedent_lst:
+                orders = algo.make_orders(state)
+                if len(orders) > 0:
+                    result[product] = orders
+                    break
               
-                    # need to figure out how many pina coladas to buy?
-                    print("z-score", z_score)
+                # expected_val_tup = expected_val_dict[product]
+                # expected_val_total, expected_val_buy, expected_val_sell = expected_val_tup
 
-                    z_thresh = 1.25
-                    if z_score > z_thresh:
-                        self.last_ticker = z_score
-                        print("BUYING BOTH")
-                        self.do_order_volume(bot_orders = pina_order_depth.sell_orders, max_vol = max_buy_pina, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+                # self.cache.append(expected_val_total)
 
-                        self.do_order_volume(bot_orders = order_depth.sell_orders, max_vol = max_buy, trade_made="BUY", product=product, order_lst = orders)
+                # # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
+                # order_depth: OrderDepth = state.order_depths[product]
+                
+                # # Initialize the list of Orders to be sent as an empty list
+                # orders: list[Order] = []
 
-                    elif z_score < -z_thresh:
-                        self.last_ticker = z_score
-                        print("SELLING BOTH")
-                        self.do_order_volume(bot_orders = pina_order_depth.buy_orders, max_vol = max_sell_pina, trade_made="SELL", product=product_pina, order_lst = pina_orders)
+                
+                # buy_prices = None
+                # sell_prices = None
+                # middle = -1
 
-                        self.do_order_volume(bot_orders = order_depth.buy_orders, max_vol = max_sell, trade_made="SELL", product=product, order_lst = orders)
+                # if len(self.cache) >= Trader.window_size:
+                #     z_score = self.z_score(expected_val_total)
+                #     z_thresh = 1.5
+                #     middle = self.rolling_mean()
 
-                    elif z_score > 1 and self.last_ticker > 0:
-                        self.do_order_volume(bot_orders = pina_order_depth.sell_orders, max_vol = max_buy_pina, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+                # if z_score < -z_thresh :
+                #     buy_prices = Trader.do_order_price(bot_orders = order_depth.sell_orders, operator = operator.lt, max_vol = max_buy, acceptable_price= middle - 1, trade_made="BUY", product=product, order_lst = orders, limit = limit)
+                # elif z_score > z_thresh:
+                #     sell_prices = Trader.do_order_price(bot_orders = order_depth.buy_orders, operator = operator.gt, max_vol = max_sell, acceptable_price= middle + 1, trade_made="SELL", product=product, order_lst = orders, limit = limit)
+                # else:
+                #     Trader.marketmake(product=product, tradeMade="BUY", quantity=10, acceptablePrice=middle, volume=max_buy, orderList=orders)
+                #     Trader.marketmake(product=product, tradeMade="SELL", quantity=10, acceptablePrice=middle, volume=max_sell, orderList=orders)
 
-                        self.do_order_volume(bot_orders = order_depth.sell_orders, max_vol = max_buy, trade_made="BUY", product=product, order_lst = orders)
+
+
+                # result[product] = orders
+
+
+        #     if product == "COCONUTS":
+
+        #         product_pina = "PINA_COLADAS"
+        #         pina_pos = state.position.get(product_pina, 0)
+        #         pina_limit = self.limits[product_pina]
+        #         max_buy_pina = pina_limit- pina_pos
+        #         max_sell_pina= abs(-pina_limit- pina_pos)
+                
+
+        #         pina_orders: list[Order] = []
+        #         pina_order_depth: OrderDepth = state.order_depths[product_pina]
+
+
+        #         # append to regressions:
+        #         coconut_midpoint = Trader.do_midpoint(order_depth.sell_orders, order_depth.buy_orders)
+        #         colada_midpoint =  Trader.do_midpoint(pina_order_depth.sell_orders, pina_order_depth.buy_orders)
+        #         self.regressions[product].append(coconut_midpoint)
+        #         self.regressions[product_pina].append(colada_midpoint)
+
+        #         z_score = self.calculate_spread()
+
+        #         # print("Timestamp", state.timestamp)
+
+        #         if state.timestamp/100 >= WINDOW_SIZE:
+              
+        #             # need to figure out how many pina coladas to buy?
+        #             print("z-score", z_score)
+
+        #             z_thresh = 1.25
+        #             if z_score > z_thresh:
+        #                 self.last_ticker = z_score
+        #                 print("BUYING BOTH")
+        #                 self.do_order_volume(bot_orders = pina_order_depth.sell_orders, max_vol = max_buy_pina, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+
+        #                 self.do_order_volume(bot_orders = order_depth.sell_orders, max_vol = max_buy, trade_made="BUY", product=product, order_lst = orders)
+
+        #             elif z_score < -z_thresh:
+        #                 self.last_ticker = z_score
+        #                 print("SELLING BOTH")
+        #                 self.do_order_volume(bot_orders = pina_order_depth.buy_orders, max_vol = max_sell_pina, trade_made="SELL", product=product_pina, order_lst = pina_orders)
+
+        #                 self.do_order_volume(bot_orders = order_depth.buy_orders, max_vol = max_sell, trade_made="SELL", product=product, order_lst = orders)
+
+        #             elif z_score > 1 and self.last_ticker > 0:
+        #                 self.do_order_volume(bot_orders = pina_order_depth.sell_orders, max_vol = max_buy_pina, trade_made="BUY", product=product_pina, order_lst = pina_orders)
+
+        #                 self.do_order_volume(bot_orders = order_depth.sell_orders, max_vol = max_buy, trade_made="BUY", product=product, order_lst = orders)
                     
-                    elif z_score < -1 and self.last_ticker < 0:
-                        self.do_order_volume(bot_orders = pina_order_depth.buy_orders, max_vol = max_sell_pina, trade_made="SELL", product=product_pina, order_lst = pina_orders)
+        #             elif z_score < -1 and self.last_ticker < 0:
+        #                 self.do_order_volume(bot_orders = pina_order_depth.buy_orders, max_vol = max_sell_pina, trade_made="SELL", product=product_pina, order_lst = pina_orders)
 
-                        self.do_order_volume(bot_orders = order_depth.buy_orders, max_vol = max_sell, trade_made="SELL", product=product, order_lst = orders)
+        #                 self.do_order_volume(bot_orders = order_depth.buy_orders, max_vol = max_sell, trade_made="SELL", product=product, order_lst = orders)
 
-                result[product] = orders
-                result[product_pina] = pina_orders
+        #         result[product] = orders
+        #         result[product_pina] = pina_orders
 
-        print(result)
+        # print(result)
         return result
-    
+        
 def main():
     timestamp = 1000
 
@@ -506,6 +552,7 @@ def main():
         position = position,
         observations = observations
     )
+    
     trader1 = Trader()
     trader1.run(state)
 
