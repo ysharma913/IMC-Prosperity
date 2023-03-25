@@ -3,7 +3,7 @@ from datamodel import OrderDepth, TradingState, Order, Trade, Listing
 from collections import deque
 import operator
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import math, statistics
 import pandas as pd
 
@@ -33,11 +33,11 @@ class Trader:
         self.regressions['PEARLS'] = self.pearlHistory
         self.regressions['BANANAS'] = self.bananaHistory
 
-        # self.regressions['COCONUTS'] = self.coconutHistory
-        # self.regressions['PINA_COLADAS'] = self.pearlHistory
+        self.regressions['COCONUTS'] = self.coconutHistory
+        self.regressions['PINA_COLADAS'] = self.pinacoladaHistory
 
-        self.regressions['COCONUTS'] = []
-        self.regressions['PINA_COLADAS'] = []
+        # self.regressions['COCONUTS'] = []
+        # self.regressions['PINA_COLADAS'] = []
     
     def calculate_spread(self):
         coconuts = np.array(self.regressions['COCONUTS'])
@@ -78,6 +78,7 @@ class Trader:
     def plotSpread(self):
         coconuts = np.array(self.regressions['COCONUTS'][:500])
         coladas = np.array(self.regressions['PINA_COLADAS'][:500])
+
         spread = np.subtract(coconuts, coladas)
 
         coconuts1 = (coconuts - np.min(coconuts)) * (1.883 - 1.873)/(np.max(coconuts) - np.min(coconuts)) + 1.873
@@ -92,9 +93,13 @@ class Trader:
         plt.plot(np.arange(0, len(spread)), zscore)
         plt.axhline(y=1, color='red')
         plt.axhline(y=-1, color='red')
+        print(coconuts)
+        print(coladas)
 
-        series = pd.Series(spread)
-        ratio = pd.Series(coladas/coconuts)
+        # series = pd.Series(spread)
+        ratio = pd.Series(coconuts/coladas)
+
+        print(ratio.mean())
         plt.figure(figsize=(8, 6), dpi=100)
         ratios_mavg5 = ratio.rolling(window=5, center=False).mean()
         ratios_mavg20 = ratio.rolling(window=20, center=False).mean()
@@ -349,9 +354,10 @@ def main():
         observations = observations
     )
     trader1 = Trader()
-    trader1.run(state)
+    #trader1.run(state)
+    trader1.initData()
 
-    # trader1.plotSpread()
+    trader1.plotSpread()
 
 if __name__ == "__main__":
     main()
