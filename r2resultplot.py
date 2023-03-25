@@ -18,3 +18,12 @@ plt.figure()
 plt.plot(times, coconutPrices, zorder = -1)
 plt.plot(times, pinacoladaPrices, zorder = -1)
 plt.show()
+
+
+# max bannas 20, -20
+
+# 0 -> 10, 
+# 10 -> -30 
+# -20
+
+# get last 20 datapoints and try to trade

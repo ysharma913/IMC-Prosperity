@@ -9,7 +9,7 @@ import pandas as pd
 # all the static trader functions
 class StaticTrader:
 
-    limits = {'PEARLS': 20, 'BANANAS': 20, 'COCONUTS': 600, 'PINA_COLADAS': 300}
+    limits = {'PEARLS': 20, 'BANANAS': 20, 'COCONUTS': 600, 'PINA_COLADAS': 300, 'BERRIES': 250, 'DIVING_GEAR': 50}
 
     def marketmake(product, tradeMade, quantity, acceptablePrice, volume, orderList):
         if tradeMade == "BUY":
