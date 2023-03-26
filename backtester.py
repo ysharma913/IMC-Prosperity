@@ -3,17 +3,18 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from datamodel import TradingState, OrderDepth
-from round2.r2submission import Trader
+from round3.dogshit import Trader
 from math import isnan
 
 
 windowSize = sys.argv[2] if (len(sys.argv) > 2 and sys.argv[1] == '-windowSize') else 300
-fileName = 'results/round2_results.csv'
+fileName = 'island-data-bottle-round-3/prices_round_3_day_0.csv'
 print(fileName)
 data = pd.read_csv(filepath_or_buffer=fileName, sep=';')
 
-products = ['COCONUTS', 'PINA_COLADAS']
+products = ['DIVING_GEAR']
 productData = {p:data.query(f"product=='{p}'") for p in products}
+dolphin_obs = data.query(f"product=='{'DOLPHIN_SIGHTINGS'}'")
 profits = {p: [] for p in products}
 buyTicks = {p: [] for p in products}
 sellTicks = {p: [] for p in products}
@@ -33,6 +34,7 @@ iterations = len(productData[products[0]])
 for i in range(iterations):
     print(f'-----Iteration {i}-----')
     orderDepths = {}
+    state.observations['DOLPHIN_SIGHTINGS'] = dolphin_obs.iloc[i]['mid_price']
     for p in products:
         row = productData[p].iloc[i]
         state.timestamp = row['timestamp']
@@ -79,18 +81,22 @@ for p in products:
     midPrices = data.query(f"product=='{p}'")['mid_price']
     times = data.query(f"product=='{p}'")['timestamp']
 
-    coco = data.query("product=='COCONUTS'")['mid_price'].reset_index(drop=True)
-    pina = data.query("product=='PINA_COLADAS'")['mid_price'].reset_index(drop=True)
-    ratio = (coco/pina)
+    # coco = data.query("product=='COCONUTS'")['mid_price'].reset_index(drop=True)
+    # pina = data.query("product=='PINA_COLADAS'")['mid_price'].reset_index(drop=True)
+    # ratio = (coco/pina)
 
-    zscores = (ratio - ratio.tail(windowSize).mean())/ratio.tail().std()
+
+    # means = ratio.rolling(windowSize).mean()
+    # stds = ratio.rolling(windowSize).std()
+
+    # zscores = (ratio - means)/stds
 
     buyMarkers = np.where(np.array(bought) == 1)[0]
     sellMarkers = np.where(np.array(sold) == 1)[0]
 
     fig, ax1 = plt.subplots(dpi=95)
     fig.set_size_inches(16, 8)
-    ax1.scatter(times, midPrices, s=0.16,label='Mid Prices')
+    ax1.plot(times, midPrices, linewidth=0.16,label='Mid Prices')
 
     # Set the label and limits for the first Axes object
     ax1.set_xlabel('TimeStamps')
@@ -104,11 +110,11 @@ for p in products:
     ax1.plot(np.array(times)[sellMarkers], np.array(midPrices)[sellMarkers], 'v', markersize=4, color='r', label='Sell Signal')
 
     ax2 = ax1.twinx()
-    ax2.scatter(times, zscores, s=0.16, label='Coco:Pina Z-Score Ratio', color='orange')
+    # ax2.plot(times, zscores, linewidth=0.1, label='Coco:Pina Z-Score Ratio', color='orange')
 
-    ax2.set_ylabel('Profit/Loss')
-    ax2.tick_params(axis='y')
-    ax2.set_ylim(zscores.min(), zscores.max())
+    # ax2.set_ylabel('Profit/Loss')
+    # ax2.tick_params(axis='y')
+    # ax2.set_ylim(zscores.min(), zscores.max())
 
     lines, labels = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
