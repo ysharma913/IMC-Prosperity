@@ -74,6 +74,10 @@ for i in range(iterations):
 
     print()
 
+coco = data.query("product=='COCONUTS'")['mid_price'].reset_index(drop=True)
+pina = data.query("product=='PINA_COLADAS'")['mid_price'].reset_index(drop=True)
+ratio = (coco/pina)
+
 for p in products:
     bought = buyTicks[p]
     sold = sellTicks[p]
@@ -81,9 +85,6 @@ for p in products:
     midPrices = data.query(f"product=='{p}'")['mid_price']
     times = data.query(f"product=='{p}'")['timestamp']
 
-    coco = data.query("product=='COCONUTS'")['mid_price'].reset_index(drop=True)
-    pina = data.query("product=='PINA_COLADAS'")['mid_price'].reset_index(drop=True)
-    ratio = (coco/pina)
 
 
     means = ratio.rolling(windowSize).mean()
@@ -136,4 +137,9 @@ for p in products:
     print(f'{p} Final PNL: {finalPNL}')
     print()
 
+
 plt.show()
+
+plt.hist(ratio)
+plt.show()
+

@@ -1,10 +1,10 @@
 from typing import Dict, List, Tuple
-from datamodel import OrderDepth, TradingState, Order, Trade, Listing, Symbol
+from datamodel import OrderDepth, TradingState, Order, Trade, Listing, Symbol, ProsperityEncoder
 from collections import deque
 import operator
 import numpy as np
-import math, statistics
 import pandas as pd
+import json
 # from PairsTrader import PairsTrader
 # all the static trader functions
 class StaticTrader:
@@ -16,14 +16,14 @@ class StaticTrader:
             less = (volume+quantity-1)//quantity
             for i in range(int(acceptablePrice) - 2, int(acceptablePrice) - 2 - less, -1):
                 vol = quantity if volume >= quantity else volume
-                print("BUY", str(-vol) + "x", i)
+                # print("BUY", str(-vol) + "x", i)
                 orderList.append(Order(product, i, vol))
                 volume -= vol
         elif tradeMade == "SELL":
             less = (volume+quantity-1)//quantity
             for i in range(int(acceptablePrice) + 2, int(acceptablePrice) + 2 + less):
                 vol = quantity if volume >= quantity else volume
-                print("SELL", str(vol) + "x", i)
+                # print("SELL", str(vol) + "x", i)
                 orderList.append(Order(product, i, -vol))
                 volume -= vol
         else:
@@ -63,7 +63,7 @@ class StaticTrader:
                 # The code below therefore sends a BUY order at the price level of the ask,
                 # with the same quantity
                 # We expect this order to trade with the sell order
-                print(trade_made, str(vol_to_trade) + "x", prices)
+                # print(trade_made, str(vol_to_trade) + "x", prices)
                 if trade_made == "BUY":
                     order_lst.append(Order(product, prices, vol_to_trade))
                     tradeHappened = True
@@ -102,7 +102,7 @@ class StaticTrader:
             # with the same quantity
             # We expect this order to trade with the sell order
             tradeHappened = True
-            print(trade_made, str(vol_to_trade) + "x", prices)
+            # print(trade_made, str(vol_to_trade) + "x", prices)
             if trade_made == "BUY":
                 order_lst.append(Order(product, prices, vol_to_trade))
 
@@ -120,8 +120,10 @@ class StaticTrader:
 
 class MeanReversion:
 
-        def __init__(self, window_size: int, z_thresh: int, product : str):
+        def __init__(self, window_size: int, z_thresh: int, product : str, historical_mean = None):
             self.rolling_window = list()
+            if historical_mean:
+                self.rolling_mean = [historical_mean] * window_size
             self.WINDOW_SIZE = window_size
             self.Z_THRESH = z_thresh
             self.product = product
@@ -141,7 +143,7 @@ class MeanReversion:
         # - return the list of orders, 
         def make_orders(self, state):
             
-            print("MAKE ORDER")
+            # print("MAKE ORDER")
 
             expected_val_tup = StaticTrader.get_product_expected_price(state, self.product)
 
@@ -187,13 +189,13 @@ class PairsTrader:
         self.window_size = window_size
         self.mean_reversion_a = MeanReversion(
             window_size=300,
-            z_thresh=1.5,
+            z_thresh=1.25,
             product=product_a
         )
         if mean_b:
             self.mean_reversion_b = MeanReversion(
-                window_size=400,
-                z_thresh=1.5,
+                window_size=300,
+                z_thresh=1.25,
                 product=product_b
             )
 
@@ -283,28 +285,23 @@ class EventTrader(PairsTrader):
 
         return {self.product_a: action_a}
 
+
 class Trader:
 
     wrappers = {
         "PEARLS": [],
-        "BANANAS": [MeanReversion(window_size = 5, z_thresh = 1.5, product = "BANANAS")],
+        "BANANAS": [],
         "COCONUTS": [
             PairsTrader(
                 product_a="COCONUTS",
                 product_b="PINA_COLADAS",
                 z_thresh=1.5,
-                window_size=300
+                window_size=1000
             )
         ],
         "PINA_COLADAS": [],
         "BERRIES": [],  
         "DIVING_GEAR": [
-            EventTrader(
-                product_a="DIVING_GEAR",
-                product_b="DOLPHIN_SIGHTINGS",
-                z_thresh=1.5,
-                window_size=150
-            )
         ]
 
     }
@@ -325,6 +322,8 @@ class Trader:
         # print(result)
         result = {}
         for product in state.order_depths:
+            if product not in self.wrappers:
+                continue
             precedent_lst = self.wrappers[product]
             for algo in precedent_lst:
                 order_dict = algo.make_orders(state)
@@ -333,7 +332,8 @@ class Trader:
                     if len(order_dict[prod]) > 0:
                         result[prod] = order_lst
                         break
-
+                    
+        # logger.flush(state, result)
         return result 
 def main():
     timestamp = 1000
