@@ -14,6 +14,13 @@ class PairsTrader:
 
         self.window_size = window_size
 
+        # a/b
+        # if the z score is high
+        # a/b is too big
+        # -> a is too big and b to small
+        # -> a is too big and b correct
+        # -> a is fair and b is too small
+
     def z_score(self, ratio: float) -> float:
         window_arr = np.array(self.rolling_ratio[-self.window_size-1:-1])
         return (ratio - window_arr.mean())/window_arr.std()
