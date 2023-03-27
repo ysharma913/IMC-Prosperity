@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from datamodel import TradingState, OrderDepth
-# from round2.r2submission import Trader
+from round3.r3_trader import Trader
 from math import isnan
 from round3.r3submission import Trader
 
