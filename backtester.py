@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from datamodel import TradingState, OrderDepth
 from round3.r3_trader import Trader
 from math import isnan
+from round3.r3submission import Trader
+
 
 
 windowSize = sys.argv[2] if (len(sys.argv) > 2 and sys.argv[1] == '-windowSize') else 300
@@ -12,7 +14,7 @@ fileName = 'island-data-bottle-round-3/prices_round_3_day_0.csv'
 print(fileName)
 data = pd.read_csv(filepath_or_buffer=fileName, sep=';')
 
-products = ['COCONUTS', 'PINA_COLADAS']
+products = ['PEARLS']
 productData = {p:data.query(f"product=='{p}'") for p in products}
 dolphin_obs = data.query(f"product=='{'DOLPHIN_SIGHTINGS'}'")
 profits = {p: [] for p in products}
@@ -31,7 +33,8 @@ state = TradingState(
 
 trader = Trader()
 iterations = len(productData[products[0]])
-for i in range(iterations):
+start, end = (0, 10000)
+for i in range(start, end):
     print(f'-----Iteration {i}-----')
     orderDepths = {}
     state.observations['DOLPHIN_SIGHTINGS'] = dolphin_obs.iloc[i]['mid_price']
@@ -93,6 +96,7 @@ for p in products:
 
     buyMarkers = np.where(np.array(bought) == 1)[0]
     sellMarkers = np.where(np.array(sold) == 1)[0]
+    print(buyMarkers)
 
     fig, ax1 = plt.subplots(dpi=95)
     fig.set_size_inches(16, 8)
@@ -105,9 +109,9 @@ for p in products:
 
     # plt.figure(figsize=(16, 8), dpi=88)
     # plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95)
-    # plt.scatter(times, midPrices, s=0.1,label='Mid Prices')
-    ax1.plot(np.array(times)[buyMarkers], np.array(midPrices)[buyMarkers], '^', markersize=4, color='g', label='Buy Signal')
-    ax1.plot(np.array(times)[sellMarkers], np.array(midPrices)[sellMarkers], 'v', markersize=4, color='r', label='Sell Signal')
+    plt.scatter(times, midPrices, s=0.1,label='Mid Prices')
+    ax1.plot(np.array(times)[buyMarkers], np.array(midPrices)[buyMarkers], '^', markersize=4, color='blue', label='Buy Signal')
+    ax1.plot(np.array(times)[sellMarkers], np.array(midPrices)[sellMarkers], 'v', markersize=4, color='orange', label='Sell Signal')
 
     ax2 = ax1.twinx()
     ax2.plot(times, zscores, linewidth=0.1, label='Coco:Pina Z-Score Ratio', color='orange')
