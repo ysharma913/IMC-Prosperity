@@ -254,7 +254,7 @@ class Trader:
         "COCONUTS": [],
         "PINA_COLADAS": [],
         "BERRIES": [],
-        "DIVING_GEAR": [SigSlope(product = 'DIVING_GEAR',trend_name = 'DOLPHIN_SIGHTINGS', window_size = 2, threshold = 5, end_phase_window_size = 7)],
+        "DIVING_GEAR": [SigSlope(product = 'DIVING_GEAR',trend_name = 'DOLPHIN_SIGHTINGS', window_size = 1, threshold = 5, end_phase_window_size = 10)],
         "DOLPHIN_SIGHTINGS": [],
         "PICNIC_BASKET": [],
         "BAGUETTE": [],
