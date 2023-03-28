@@ -312,7 +312,7 @@ class PairsTrader:
         self.rolling_ratio.append(ratio)
         # print('Window Sizes', len(self.rolling_ratio))
         if len(self.rolling_ratio) < self.window_size - 1:
-           {self.product_a: [], self.product_b:[]}
+           return {self.product_a: [], self.product_b:[]}
         product_a_order_depth: OrderDepth = state.order_depths[self.product_a]
         product_b_order_depth: OrderDepth = state.order_depths[self.product_b]
 
@@ -323,22 +323,22 @@ class PairsTrader:
         z_score = self.z_score(ratio)
 
 
-        reversion_a_action: Dict[str, List[Order]] = self.mean_reversion_a.make_orders(state)[self.product_a]
+        reversion_action: Dict[str, List[Order]] = self.mean_reversion_a.make_orders(state)[self.product_a]
         reversion_b_action: Dict[str, List[Order]] = self.mean_reversion_b.make_orders(state)[self.product_b]
         action_a: List[Order] = []
         action_b: List[Order] = []
         if z_score < -self.z_thresh:
             # long a or do nothing with a
-            if len(reversion_a_action) > 0 and reversion_a_action[0].quantity > 0:
-                action_a = reversion_a_action
+            if len(reversion_action) > 0 and reversion_action[0].quantity > 0:
+                action_a = reversion_action
             # short b or do nothing with b
             if len(reversion_b_action) > 0 and reversion_b_action[0].quantity < 0:
                 action_b = reversion_b_action
         
         elif z_score > self.z_thresh:
-            # short a or do nothing with b
-            if len(reversion_a_action) > 0 and reversion_a_action[0].quantity < 0:
-                action_a = reversion_a_action
+            # short a or do nothing with a
+            if len(reversion_action) > 0 and reversion_action[0].quantity < 0:
+                action_a = reversion_action
             # long b or do nothing with b
             if len(reversion_b_action) > 0 and reversion_b_action[0].quantity > 0:
                 action_b = reversion_b_action
@@ -347,6 +347,57 @@ class PairsTrader:
             self.product_a: action_a,
             self.product_b: action_b
         }
+      
+class QuadTrader():
+    def __init__(self, product, denoms, z_thresh: float, window_size: int, historical_avg, ratioFactors) -> None:
+        self.product = product
+        self.denoms = denoms
+        self.z_thresh = z_thresh
+
+        self.rolling_ratio = [historical_avg] * window_size
+        self.historical_avg = historical_avg
+        self.window_size = window_size
+        self.ratioFactors = ratioFactors
+
+        self.mean_reversion = MeanReversion(
+            window_size=300,
+            z_thresh=1.25,
+            product=product
+        )
+    
+    def z_score(self, ratio: float) -> float:
+        window_arr = np.array(self.rolling_ratio[-self.window_size-1:-1])
+        return (ratio - window_arr.mean())/window_arr.std()
+    
+    def make_orders(self, state: TradingState) -> List[Order]:
+        price_product, _, _ = StaticTrader.get_product_expected_price(state, self.product)
+        prices = {prod: StaticTrader.get_product_expected_price(state, prod)[0] for prod in self.denoms}
+
+        numerator = self.ratioFactors[self.product] * price_product
+        denominator = sum(self.ratioFactors[prod]*prices[prod] for prod in self.denoms)
+
+        ratio =  numerator/denominator
+        self.rolling_ratio.append(ratio)
+
+        if len(self.rolling_ratio) < self.window_size - 1:
+            return {self.product: []}
+        
+        z_score = self.z_score(ratio)
+        reversion_action: List[Order] = self.mean_reversion.make_orders(state)[self.product]
+        action: List[Order] = []
+
+        if z_score < -self.z_thresh:
+            # long a or do nothing with a
+            if len(reversion_action) > 0 and reversion_action[0].quantity > 0:
+                action = reversion_action
+        
+        elif z_score > self.z_thresh:
+            # short a or do nothing with a
+            if len(reversion_action) > 0 and reversion_action[0].quantity < 0:
+                action = reversion_action
+        
+        return {self.product: action}
+        
       
 class EventTrader(PairsTrader):
 
@@ -367,19 +418,19 @@ class EventTrader(PairsTrader):
         
         z_score = self.z_score(ratio)
 
-        reversion_a_action: Dict[str, List[Order]] = self.mean_reversion_a.make_orders(state)[self.product_a]
+        reversion_action: Dict[str, List[Order]] = self.mean_reversion_a.make_orders(state)[self.product_a]
         action_a = []
         if (z_score < -self.z_thresh and 
-            len(reversion_a_action) > 0 and
-            reversion_a_action[0].quantity > 0
+            len(reversion_action) > 0 and
+            reversion_action[0].quantity > 0
             ):
-            action_a = reversion_a_action
+            action_a = reversion_action
 
         elif (z_score > self.z_thresh and
-            len(reversion_a_action) > 0 and
-            reversion_a_action[0].quantity < 0
+            len(reversion_action) > 0 and
+            reversion_action[0].quantity < 0
             ):
-            action_a = reversion_a_action
+            action_a = reversion_action
 
         return {self.product_a: action_a}
 
@@ -403,12 +454,58 @@ class Trader:
                 z_thresh=1.25,
                 window_size=300
             )],
-        "BAGUETTE" : [],
-        "DIP": [],
-        "UKULELE": [],
-        "PICNIC_BASKET": []
-
-    }
+        "BAGUETTE" : [QuadTrader(
+                product='BAGUETTE', 
+                denoms=['DIP', 'UKULELE', 'PICNIC_BASKET'],
+                z_thresh=1.25,
+                window_size=300,
+                historical_avg=12334.15675,
+                ratioFactors={
+                    'BAGUETTE': 2,
+                    'DIP': -4,
+                    'UKULELE': -1,
+                    'PICNIC_BASKET': 1
+                }
+        )],
+        "DIP": [QuadTrader(
+                product='DIP', 
+                denoms=['BAGUETTE', 'UKULELE', 'PICNIC_BASKET'],
+                z_thresh=1.25,
+                window_size=300,
+                historical_avg=7096.9094,
+                ratioFactors={
+                    'BAGUETTE': -2,
+                    'DIP': 4,
+                    'UKULELE': -1,
+                    'PICNIC_BASKET': 1
+                }
+        )],
+        "UKULELE": [QuadTrader(
+                product='UKULELE', 
+                denoms=['BAGUETTE', 'DIP', 'PICNIC_BASKET'],
+                z_thresh=1.25,
+                window_size=300,
+                historical_avg=20682.72135,
+                ratioFactors={
+                    'BAGUETTE': -2,
+                    'DIP': -4,
+                    'UKULELE': 1,
+                    'PICNIC_BASKET': 1
+                }
+        )],
+        "PICNIC_BASKET": [QuadTrader(
+                product='PICNIC_BASKET', 
+                denoms=['BAGUETTE', 'DIP', 'UKULELE'],
+                z_thresh=1.25,
+                window_size=300,
+                historical_avg=74063.9448,
+                ratioFactors={
+                    'BAGUETTE': 2,
+                    'DIP': 4,
+                    'UKULELE': 1,
+                    'PICNIC_BASKET': 1
+                }
+        )]}
     
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
 
