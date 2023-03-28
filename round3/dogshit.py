@@ -182,108 +182,65 @@ class MeanReversion:
 
             return {self.product: orders}
 
-class AsyncTrader: 
-
-    def __init__(self, product, trend_data, trend_name, window_size, window_offset, slope_thresh):
-        # self.rolling_window = list(trend_data)
-        self.trend_name = trend_name
-        self.rolling_window = list()
-        self.product = product
-        self.WINDOW_SIZE = window_size
-        self.WINDOW_OFFSET = window_offset
-        self.slope_thresh = slope_thresh
-        self.limit = StaticTrader.limits[product]
-
-    def delta(self, window_offset):
-        # Gather three 'windows' within the actual rolling window to return change in average
-        result = []
-        for i in range(window_offset):
-            result.append(np.array(self.rolling_window[-self.WINDOW_SIZE - 1 - i: -1 - i]).mean())
-        result = np.array(result)
-        delta = np.diff(result).mean()
-        return delta
-        
-    def update_window(self, state):
-        self.rolling_window.append(state.observations[self.trend_name])
-        return
-    
-    def make_orders(self, state):
-        orders: list[Order] = []
-        order_depth: OrderDepth = state.order_depths[self.product]
-
-        max_buy_vol, max_sell_vol = StaticTrader.get_max_min_vols(state, self.product)
-        current_price, current_max_buy, current_min_sell = StaticTrader.get_product_expected_price(state, self.product)
-
-        # TODO: We need to make this window dynamic
-        # IDEA: We create another rolling window for diving gear. Record the time it takes for diiving gear to react to a large change in 
-        assert self.WINDOW_SIZE <= self.WINDOW_SIZE
-
-        if state.timestamp > self.WINDOW_OFFSET:
-            trend = self.delta(self.WINDOW_OFFSET)
-            # We want to trade based on the slope of the trend data at a previous time
-            if trend > self.slope_thresh:
-                # The slope is trending upwards
-                StaticTrader.do_order_price(order_depth.sell_orders, operator.lt, max_buy_vol, current_min_sell, 'BUY', self.product, orders, self.limit)
-            elif trend < -self.slope_thresh:
-                # The slope is trending downwards
-                StaticTrader.do_order_price(order_depth.buy_orders, operator.gt, max_sell_vol, current_max_buy, 'SELL', self.product, orders, self.limit)
-            # else:
-            #     StaticTrader.marketmake(self.product, 'BUY', 10, current_min_sell, abs(max_sell_vol), orders)
-            #     StaticTrader.marketmake(self.product, 'SELL', 10, current_max_buy, abs(max_buy_vol), orders)
-
-        self.update_window(state)
-
-        return {self.product: orders}
-
 class SigSlope:
     
-    def __init__(self, product, trend_name, window_size, threshold):
+    def __init__(self, product, trend_name, window_size, threshold, end_phase_window_size):
         self.product = product
         self.trend_name = trend_name
         self.WINDOW_SIZE = window_size
+        self.END_PHASE_WINDOW_SIZE = end_phase_window_size
         self.threshold = threshold
         self.flag = 0
-        self.prev_val = 3075
-        self.slopes = []
+        self.product_values = []
+        self.sighting_values = []
         self.limit = StaticTrader.limits[product]
     
     def is_steep(self, state):
-        current_sightings = state.observations[self.trend_name]
-        current_slope = current_sightings - self.prev_val
-        self.prev_val = current_slope
-
-        if state.timestamp % 500 == 0:
-            self.slopes.append(current_slope)
-
-            z = self.z_score(current_slope)
-
-            if z < -self.threshold:
-                return -1
-            elif z > self.threshold:
-                return 1
+        current_slope = (self.sighting_values[-1] - self.sighting_values[-1 - self.WINDOW_SIZE])
+        
+        if current_slope < -self.threshold:
+            return -1
+        elif current_slope > self.threshold:
+            return 1
         
         return 0
-
-    def z_score(self, current_slope):
-        window_array = np.array(self.slopes[-self.WINDOW_SIZE - 1 : -1])
-        return (current_slope - window_array.mean()) / window_array.std()
 
     def make_orders(self, state):
         orders: list[Order] = []
         order_depth: OrderDepth = state.order_depths[self.product]
 
         max_buy_vol, max_sell_vol = StaticTrader.get_max_min_vols(state, self.product)
-        current_price, current_max_buy, current_min_sell = StaticTrader.get_product_expected_price(state, self.product)
+        current_price, _, _ = StaticTrader.get_product_expected_price(state, self.product)
 
-        if state.timestamp > self.WINDOW_SIZE * 100:
-            signal = self.is_steep(state)
+        # self.product_values.append(current_price)
+        self.sighting_values.append(state.observations[self.trend_name])
 
-            if signal == -1:
+        gap = max(self.END_PHASE_WINDOW_SIZE, self.WINDOW_SIZE)
+        if state.timestamp > gap * 100:
+            prod_slopes = []
+            for i in range(self.END_PHASE_WINDOW_SIZE):
+                prod_slopes.append(self.sighting_values[-1 - i] - self.sighting_values[-2 - i])
+                # prod_slopes.append(self.product_values[-1 - i] - self.product_values[-2 - i])
+            prod_slopes = np.array(prod_slopes)
+
+            if self.flag == 1 and prod_slopes.mean() <= 0:
                 StaticTrader.do_order_volume(order_depth.buy_orders, max_sell_vol, 'SELL', self.product, orders)
-                print('Negative Threshold met')
-            elif signal == 1:
+                self.flag = 0
+                print('Ended Positive Threshold Phase')
+            elif self.flag == -1 and prod_slopes.mean() >= 0:
                 StaticTrader.do_order_volume(order_depth.sell_orders, max_buy_vol, 'BUY', self.product, orders)
-                print('Positive Threshold met')
+                self.flag = 0
+                print('Ended Negative Threshold Phase')
+            else:
+                signal = self.is_steep(state)
+                if signal == -1:
+                    StaticTrader.do_order_volume(order_depth.buy_orders, max_sell_vol, 'SELL', self.product, orders)
+                    self.flag = -1
+                    print('Negative Threshold met')
+                elif signal == 1:
+                    StaticTrader.do_order_volume(order_depth.sell_orders, max_buy_vol, 'BUY', self.product, orders)
+                    self.flag = 1
+                    print('Positive Threshold met')
 
         return {self.product: orders}
 
@@ -297,8 +254,12 @@ class Trader:
         "COCONUTS": [],
         "PINA_COLADAS": [],
         "BERRIES": [],
-        "DIVING_GEAR": [SigSlope(product='DIVING_GEAR', trend_name='DOLPHIN_SIGHTINGS', window_size=100, threshold=1.15)],
-        "DOLPHIN_SIGHTINGS": []
+        "DIVING_GEAR": [SigSlope(product = 'DIVING_GEAR',trend_name = 'DOLPHIN_SIGHTINGS', window_size = 2, threshold = 5, end_phase_window_size = 7)],
+        "DOLPHIN_SIGHTINGS": [],
+        "PICNIC_BASKET": [],
+        "BAGUETTE": [],
+        "UKULELE": [],
+        "DIP": []
     }
     # past_averages
 
